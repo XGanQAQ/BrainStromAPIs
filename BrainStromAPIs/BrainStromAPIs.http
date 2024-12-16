@@ -1,0 +1,6 @@
+@BrainStromAPIs_HostAddress = http://localhost:5049
+
+GET {{BrainStromAPIs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
