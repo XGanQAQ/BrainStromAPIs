@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace BrainStromAPIs
 {
@@ -34,6 +35,7 @@ namespace BrainStromAPIs
         public string Title { get; set; }
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<Idea> Ideas { get; set; }
 
     }
     public class Idea
@@ -44,6 +46,7 @@ namespace BrainStromAPIs
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public string ThemeTitle { get; set; }
+        public int ThemeId { get; set; }
         public Theme ?Theme { get; set; }
         public int UserId { get; set; }
         public User ?User { get; set; }
@@ -73,12 +76,28 @@ namespace BrainStromAPIs
         {
             base.OnModelCreating(modelBuilder);
 
-            // 配置 User 与 Idea 之间的关系
+            // 用户与灵感之间的一对多关系
             modelBuilder.Entity<Idea>()
                 .HasOne(i => i.User) // 一个Idea只能有一个User
                 .WithMany(u => u.Ideas) // 一个User可以有多个Idea
                 .HasForeignKey(i => i.UserId) // 外键,被谁创建的Idea
                 .OnDelete(DeleteBehavior.Cascade); // 级联删除
+
+            // 主题与灵感之间的一对多关系
+            modelBuilder.Entity<Idea>()
+                .HasOne(i => i.Theme)
+                .WithMany(t => t.Ideas)
+                .HasForeignKey(i => i.ThemeId);
+
+            // 灵感和标签之间的多对多关系
+            modelBuilder.Entity<Idea>()
+                .HasMany(i => i.Tags)
+                .WithMany(t => t.Ideas);
+
+            // 用户和队伍之间的多对多关系
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Teams)
+                .WithMany(t => t.Users);
 
             //让User的Role字段使用string类型
             modelBuilder.Entity<User>()

@@ -172,27 +172,50 @@ public static class BrainStormDatasEndpoints
 
         //——————————————————————————————根据参数查找——————————————————————————————————
         //根据主题名查找并返回所有灵感，默认按照时间顺序排序
-        app.MapGet("/api/ideas/SearchByTheme", async (AppDbContext db, HttpContext httpContext, string themeName) =>
+        app.MapGet("/api/ideas/SearchByTheme/{rule}", async (AppDbContext db, HttpContext httpContext, string themeName, string? rule) =>
         {
             var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
-            var idea = await db.Ideas
+
+            if (string.IsNullOrEmpty(themeName) || db.Themes.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("ThemeName is null or empty.");
+            }
+
+            List<Idea> ideas;
+            if(rule== "descend")
+            {
+                ideas = await db.Ideas
+                .Where(i => i.UserId == userId && i.ThemeTitle == themeName)
+                .OrderByDescending(i => i.CreatedAt)
+                .ToListAsync();
+            }
+            else
+            {
+                ideas = await db.Ideas
                 .Where(i => i.UserId == userId && i.ThemeTitle == themeName)
                 .OrderBy(i => i.CreatedAt)
-                .FirstOrDefaultAsync();
-            return Results.Ok(idea);
+                .ToListAsync();
+            }
+            return Results.Ok(ideas);
         })
             .WithDescription("根据主题名返回所有灵感")
             .WithName("GetIdeasByTheme")
             .RequireAuthorization();
 
         //根据标签名查找并返回所有灵感,默认按照时间顺序排序
-        app.MapGet("/api/ideas/SearchByTag", async (AppDbContext db, HttpContext httpContext, string tagName) =>
+        app.MapGet("/api/ideas/SearchByTag/{rule}", async (AppDbContext db, HttpContext httpContext, string tagName, string? rule) =>
         {
             var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+
+            if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("TagName is null or empty.");
+            }
+
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.TagsName.Contains(tagName))
                 .OrderBy(i => i.CreatedAt)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
             return Results.Ok(idea);
         })
             .WithDescription("根据标签名返回所有灵感")
@@ -200,7 +223,6 @@ public static class BrainStormDatasEndpoints
             .RequireAuthorization();
 
         //根据主题名和标签名查找并返回所有灵感,默认按照时间顺序排序
-        //TODO: 修改，现在返回的是第一个，应该返回所有
         app.MapGet("/api/ideas/SearchByThemeAndTag/{rule}", async (AppDbContext db, HttpContext httpContext, string themeName, string tagName,string ?rule) =>
         {
             var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
@@ -210,20 +232,33 @@ public static class BrainStormDatasEndpoints
                 return Results.BadRequest("ThemeName is null or empty.");
             }
 
-            var idea = await db.Ideas
+            if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("TagName is null or empty.");
+            }
+            List<Idea> ideas;
+                ideas = await db.Ideas
                 .Where(i => i.UserId == userId && i.ThemeTitle == themeName && i.TagsName.Contains(tagName))
                 .OrderBy(i => i.CreatedAt)
-                .FirstOrDefaultAsync();
-            return Results.Ok(idea);
+                .ToListAsync();
+            return Results.Ok(ideas);
+
+
         })
             .WithDescription("根据主题名和标签名返回所有灵感")
             .WithName("GetIdeasByThemeAndTag")
             .RequireAuthorization();
 
         //根据主题名随机返回一条灵感
-        app.MapGet("/api/ideas/RandomByTheme/{rule}", async (AppDbContext db, HttpContext httpContext, string themeName,string? rule) =>
+        app.MapGet("/api/ideas/RandomByTheme", async (AppDbContext db, HttpContext httpContext, string themeName) =>
         {
             var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+
+            if (string.IsNullOrEmpty(themeName) || db.Themes.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("ThemeName is null or empty.");
+            }
+
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.ThemeTitle == themeName)
                 .OrderBy(i => Guid.NewGuid())
@@ -238,6 +273,12 @@ public static class BrainStormDatasEndpoints
         app.MapGet("/api/ideas/RandomByTag", async (AppDbContext db, HttpContext httpContext, string tagName) =>
         {
             var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+
+            if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("TagName is null or empty.");
+            }
+
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.TagsName.Contains(tagName))
                 .OrderBy(i => Guid.NewGuid())
@@ -340,6 +381,25 @@ public static class BrainStormDatasEndpoints
             .WithDescription("新建一个标签")
             .WithName("CreateTag")
             .RequireAuthorization();
+        app.MapDelete("/api/ideas/tags/{id}", async (AppDbContext db, HttpContext httpContext, int id) =>
+        {
+            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+
+            var tag = await db.Tags
+                .Where(t => t.UserId == userId && t.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (tag == null)
+            {
+                return Results.NotFound();
+            }
+
+            db.Tags.Remove(tag);
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "Tag deleted successfully." });
+        })
+            .WithDescription("根据标签id删除标签（删除当前用户的）");
         #endregion
     }
 }
