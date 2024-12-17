@@ -64,9 +64,9 @@ namespace BrainStromAPIs
         public ICollection<Idea> Ideas { get; set; }  // 导航属性 一个Tag可以对应多个Idea
     }
 
-    public class AppDbContext : DbContext
+    public class BrainStormDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public BrainStormDbContext(DbContextOptions<BrainStormDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Idea> Ideas { get; set; }

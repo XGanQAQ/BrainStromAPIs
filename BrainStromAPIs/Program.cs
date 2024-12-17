@@ -10,13 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 IConfiguration configuration = builder.Configuration; //获取配置信息
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("AppData")); //暂时先使用内存数据库做测试
+//builder.Services.AddDbContext<BrainStormDbContext>(options => options.UseInMemoryDatabase("AppData")); //暂时先使用内存数据库做测试
 
 //注入服务
-//TODO: 待测试使用SQLServer数据库
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseSqlServer(configuration["DataBaseSet:ConnectionString"] )
-//);
+builder.Services.AddDbContext<BrainStormDbContext>(options =>
+    options.UseSqlServer(configuration["DataBaseSet:ConnectionString"])
+);
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
 

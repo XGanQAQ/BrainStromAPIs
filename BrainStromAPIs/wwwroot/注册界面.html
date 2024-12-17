@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册界面</title>
+    <link rel="stylesheet" href="注册背景.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('注册背景.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .register-container {
+            background-color:  rgba(255, 255, 255, 0.575);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            position: absolute;
+            top: 53%;
+            transform: translateY(-50%);
+        }
+
+        .register-title {
+            font-size: 24px;
+            color: #212f31;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 80%;
+        }
+
+        .input-group label {
+            flex: 0 0 70px;
+            margin-right: 4px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            opacity: 0.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #f998bd;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #da7fb0;
+        }
+
+        .error-message {
+            color: rgb(168, 83, 83);
+            margin-top: 10px;
+            display: none; /* 初始状态隐藏 */
+        }
+
+        .back-to-login-wrapper {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .back-to-login {
+            text-decoration: none;
+            color: #35c0eb;
+            font-size: 16px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0);
+            border: none;
+            display: inline-block;
+        }
+
+        .back-to-login:hover {
+            color: #7ed8f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="back-to-login-wrapper">
+            <a href="登陆界面.html" class="back-to-login">&lt;- 登陆界面</a>
+        </div>
+
+        <h2 class="register-title">注册</h2>
+
+        <form id="register-form">
+            <div class="input-group">
+                <label for="email">电子邮箱</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <div class="input-group">
+                <label for="confirm-password">确认密码</label>
+                <input type="password" id="confirm-password" required>
+            </div>
+
+            <button type="submit" class="btn">确认</button>
+        </form>
+
+        <div class="error-message" id="error-message">输入有误</div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单默认提交
+
+            const email = document.getElementById('email').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            const errorMessage = document.getElementById('error-message');
+
+            // 重置错误信息
+            errorMessage.textContent = '';
+            errorMessage.style.display = 'none';
+
+            // 检查输入是否为空
+            if (!username || !password || !confirmPassword || !email) {
+                errorMessage.textContent = '信息不完整';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // 检查密码是否匹配
+            if (password !== confirmPassword) {
+                errorMessage.textContent = '密码输入有误';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // 发送注册请求
+            fetch('https://localhost:7050/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('注册成功！');
+                    window.location.href = '登陆界面.html'; // 注册成功后跳转到登录页面
+                } else {
+                    alert('注册失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                 console.error('Error:', error);
+                  alert('请求失败，请稍后再试');
+            });
+;
+        });
+    </script>
+</body>
+</html>

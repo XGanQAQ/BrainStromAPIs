@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>登录界面</title>
+        <link rel="stylesheet" href="登陆背景.css">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+                background-image: url('登陆背景.png');
+                background-size: cover;
+                background-position: center;
+            }
+
+            .login-container {
+                background-color: rgba(255, 255, 255, 0.575);
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                width: 300px;
+                position: absolute;
+                left: 32%;
+                top: 55%;
+                transform: translateY(-50%);
+            }
+
+            .login-title {
+                font-size: 24px;
+                color: #212f31;
+                margin-bottom: 20px;
+            }
+
+            .input-group {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+                width: 80%;
+            }
+
+            .input-group label {
+                flex: 0 0 70px;
+                margin-right: 4px;
+            }
+
+            .input-group input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                opacity: 0.6;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 16px;
+                color: #fff;
+                background-color: #f998bd;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn:hover {
+                background-color: #da7fb0;
+            }
+
+            .btn-register {
+                background-color: #6ddafb;
+                margin-left: 20px;
+            }
+
+            .btn-register:hover {
+                background-color: #4caac5;
+            }
+        </style>
+    </head>
+    <script>
+        console.debug("begin login");
+
+        document.getElementById('login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // 发送登录请求
+            fetch('https://localhost:7050/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Login successful!');
+                        window.location.href = '/dashboard'; // 登录成功后跳转到主页面
+                    } else {
+                        alert('Login failed: ' + data.message);
+                    }
+                })
+                .catch(error => {
+    console.error('Error:', error);
+    alert('请求失败，请稍后再试');
+});
+;
+        });
+    </script>
+    <body>
+        <div class="login-container">
+            <h2 class="login-title">登录</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">邮箱</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">登录</button>
+            </form>
+            <a href="注册界面.html" class="btn btn-register" id="registerBtn">注册</a>
+        </div>
+    </body>
+</html>
+
+    

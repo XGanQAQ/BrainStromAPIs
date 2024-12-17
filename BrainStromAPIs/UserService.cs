@@ -4,9 +4,9 @@ namespace BrainStromAPIs
 {
     public class UserService
     {
-        private readonly AppDbContext _db;
+        private readonly BrainStormDbContext _db;
 
-        public UserService(AppDbContext db)
+        public UserService(BrainStormDbContext db)
         {
             _db = db;
         }

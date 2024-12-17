@@ -1,0 +1,7 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('登陆背景.png'); /* 替换为你的图像路径 */
+    background-size: cover; /* 让背景图像覆盖整个页面 */
+    background-position: center; /* 居中显示背景图像 */
+}
