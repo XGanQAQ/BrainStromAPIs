@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http;
+using System.Security.Claims;
 
 public static class BrainStormDatasEndpoints
 {
@@ -15,7 +17,7 @@ public static class BrainStormDatasEndpoints
             // 验证用户是否已经存在
             if (await db.Users.AnyAsync(u => u.Username == model.Username))
             {
-                return Results.BadRequest("Username is already taken.");
+                return Results.BadRequest(new { message="Username is already taken." });
             }
 
             var user = new User
@@ -43,7 +45,7 @@ public static class BrainStormDatasEndpoints
             {
                 return Results.Unauthorized(); //new { message = "Invalid username or password." }
             }
-
+            
             // 生成 JWT Token
             var token = authService.GenerateJwtToken(user);
 
@@ -51,13 +53,37 @@ public static class BrainStormDatasEndpoints
         })
         .WithDescription("根据传入的账户密码，验证用户是否存在，密码是否正确，返回身份验证JWT Token")
         .WithName("Login");
+
+        app.MapGet("/api/auth/info", async (BrainStormDbContext db, HttpContext httpContext) =>
+        {
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
+
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (userId == 0)
+            {
+                Console.WriteLine("httpContext.User= " + httpContext.User);
+                Console.WriteLine($"ClaimTypes.NameIdentifier= " + httpContext.User?.FindFirst(ClaimTypes.NameIdentifier));
+                Console.WriteLine($"Value= " + httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            }
+
+            if (user == null)
+            {
+                return Results.NotFound(new { message = $"Can't find the user information,it's user Id is {userId}" });
+            }
+
+            return Results.Ok(new { username = user.Username, email = user.Email });
+        })
+        .WithDescription("根据Token，返回用户信息")
+        .WithName("GetUserInformation")
+        .RequireAuthorization();
         #endregion
         #region 灵感相关
         //——————————————————————————————————————CRUD——————————————————————————————————————
         // 提交一条Idea
         app.MapPost("/api/ideas", async (BrainStormDbContext db, HttpContext httpContext, CreateIdeaModel model) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var idea = new Idea
             {
@@ -67,9 +93,13 @@ public static class BrainStormDatasEndpoints
                 TagsName = model.TagsName
             };
 
+            idea.UserId = userId;
             //查找用户，将用户赋值给idea.User
             idea.User = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            
             idea.Theme = await db.Themes.FirstOrDefaultAsync(t => t.Title == idea.ThemeTitle);
+            idea.ThemeId = idea.Theme.Id;
+
             idea.Tags = await db.Tags.Where(t => idea.TagsName.Contains(t.Name)).ToListAsync();
 
             db.Ideas.Add(idea);
@@ -84,7 +114,7 @@ public static class BrainStormDatasEndpoints
         //根据用户id查找并返回所有灵感
         app.MapGet("/api/ideas", async (BrainStormDbContext db, HttpContext httpContext) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             //通过用户id查找并返回所有灵感
             var ideas = await db.Ideas
@@ -100,7 +130,7 @@ public static class BrainStormDatasEndpoints
         //根据灵感id查找并返回（查找当前用户的）
         app.MapGet("/api/ideas/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.Id == id) //既要属于此用户id
@@ -120,7 +150,7 @@ public static class BrainStormDatasEndpoints
         //根据灵感id修改灵感（修改当前用户的）
         app.MapPut("/api/ideas/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id, UpdateIdeaModel model) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.Id == id)
                 .FirstOrDefaultAsync();
@@ -151,7 +181,8 @@ public static class BrainStormDatasEndpoints
         //根据灵感id删除灵感（删除当前用户的）
         app.MapDelete("/api/ideas/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
+
 
             var idea = await db.Ideas
                 .Where(i => i.UserId == userId && i.Id == id)
@@ -175,7 +206,7 @@ public static class BrainStormDatasEndpoints
         //根据主题名查找并返回所有灵感，默认按照时间顺序排序
         app.MapGet("/api/ideas/SearchByTheme/{rule}", async (BrainStormDbContext db, HttpContext httpContext, string themeName, string? rule) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             if (string.IsNullOrEmpty(themeName) || db.Themes.FirstOrDefault() == null)
             {
@@ -206,7 +237,7 @@ public static class BrainStormDatasEndpoints
         //根据标签名查找并返回所有灵感,默认按照时间顺序排序
         app.MapGet("/api/ideas/SearchByTag/{rule}", async (BrainStormDbContext db, HttpContext httpContext, string tagName, string? rule) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
             {
@@ -226,7 +257,7 @@ public static class BrainStormDatasEndpoints
         //根据主题名和标签名查找并返回所有灵感,默认按照时间顺序排序
         app.MapGet("/api/ideas/SearchByThemeAndTag/{rule}", async (BrainStormDbContext db, HttpContext httpContext, string themeName, string tagName,string ?rule) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             if (string.IsNullOrEmpty(themeName)||db.Themes.FirstOrDefault()==null)
             {
@@ -253,7 +284,7 @@ public static class BrainStormDatasEndpoints
         //根据主题名随机返回一条灵感
         app.MapGet("/api/ideas/RandomByTheme", async (BrainStormDbContext db, HttpContext httpContext, string themeName) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             if (string.IsNullOrEmpty(themeName) || db.Themes.FirstOrDefault() == null)
             {
@@ -273,7 +304,7 @@ public static class BrainStormDatasEndpoints
         //根据标签名随机返回一条灵感
         app.MapGet("/api/ideas/RandomByTag", async (BrainStormDbContext db, HttpContext httpContext, string tagName) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
             {
@@ -309,7 +340,7 @@ public static class BrainStormDatasEndpoints
 
         app.MapPost("/api/themes",async (BrainStormDbContext db, HttpContext httpContext, CreateThemeModel model) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var theme = new Theme
             {
@@ -321,7 +352,7 @@ public static class BrainStormDatasEndpoints
             db.Themes.Add(theme);
             await db.SaveChangesAsync();
 
-            return Results.Ok(new { message = "Idea created successfully." });
+            return Results.Ok(new { message = "Theme created successfully." });
         })
         .WithDescription("新建一个主题")
         .WithName("CreateThemes")
@@ -329,7 +360,7 @@ public static class BrainStormDatasEndpoints
 
         app.MapGet("/api/themes", async (BrainStormDbContext db, HttpContext httpContext) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             //通过用户id查找并返回所有灵感
             var themes = await db.Themes
@@ -344,7 +375,7 @@ public static class BrainStormDatasEndpoints
 
         app.MapDelete("/api/themes/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var theme = await db.Themes
                 .Where(i => i.UserId == userId && i.Id == id)
@@ -368,7 +399,7 @@ public static class BrainStormDatasEndpoints
         #region 标签的CRUD
         app.MapGet("/api/ideas/tags", async (BrainStormDbContext db, HttpContext httpContext) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var tags = await db.Tags
                 .Where(t => t.UserId == userId)
@@ -381,7 +412,7 @@ public static class BrainStormDatasEndpoints
         .RequireAuthorization();
         app.MapPost("/api/ideas/tags", async (BrainStormDbContext db, HttpContext httpContext, string tagName) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var tag = new Tag
             {
@@ -399,7 +430,7 @@ public static class BrainStormDatasEndpoints
             .RequireAuthorization();
         app.MapDelete("/api/ideas/tags/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
         {
-            var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
+            var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
             var tag = await db.Tags
                 .Where(t => t.UserId == userId && t.Id == id)
