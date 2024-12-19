@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵感回溯</title>
+    <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(45deg, #6ef0b1e4, #e3b867) ;
+        color: rgb black;
+        display: flex;
+        margin: 0;
+        height: 100vh;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 40px;
+        margin: 10px;
+        /* background: rgba(255, 255, 255, 0.1); */
+        background-color:transparent;
+        /* background: linear-gradient(45deg, #05e076e4, #e1ec0f) ;  */
+        background-image: url('3.png'); 
+        background-size: cover; /*使背景图片覆盖整个容器 */
+        background-position: center;/* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /*防止背景图片重复 */
+        border-radius: 20px;
+        /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+        display: flex;
+        flex-direction: column;
+        width: 1080px;
+        height: 800px;
+        gap: 20px; 
+    }
+    .content {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-grow: 1;  /* 使内容区域填满 */
+    }
+    .left {
+        width: 45%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        flex-grow: 1;  /* 让左侧区域填满 */
+    }
+    
+    .right {
+        width: 15%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex-grow: 0.8;  /* 让右侧区域填满 */
+        margin-top: 100px;
+    }
+    .box {
+        background-color: #f1f1f1;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .charactor {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 100px;
+        margin-top: 20px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .scene {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 100px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .operation {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 120px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .mainstory {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 120px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .worldview {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 120px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .together {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 600px;
+        height: 120px;
+        margin-bottom: 30px;
+        margin-left: 20px;
+    }
+    .left-box {
+        background-color: rgba(255, 255, 255, 0.1);
+        overflow-y: scroll;
+        flex-grow: 1;  /* 让输出框填满 */
+        width: 700px;
+        height: 600px;
+    }
+    .button-container {
+        display: flex;
+        flex-direction: column; /* 按钮纵向排列 */
+        gap: 10px;
+        margin-top: auto;
+    }
+    .button-container button {
+        padding: 40px 20px;
+        background-color: transparent;
+        /* background:linear-gradient(45deg,  #f5faa2, #c1e891)!important; */
+        color: rgb(3, 3, 3);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .button-container button:hover {
+        /* background-color: #026109; */
+        background:linear-gradient(45deg,  #ebe894, #b3daa7)!important;
+    }
+
+    .search{
+        background-image: url('review-btn1.png');
+        background-size: cover; /* 使背景图片覆盖整个容器 */
+        background-position: center; /* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /* 防止背景图片重复 */
+    }
+    .sort{
+        background-image: url('review-btn2.png');
+        background-size: cover; /* 使背景图片覆盖整个容器 */
+        background-position: center; /* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /* 防止背景图片重复 */
+    }
+    .look{
+        background-image: url('review-btn3.png');
+        background-size: cover; /* 使背景图片覆盖整个容器 */
+        background-position: center; /* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /* 防止背景图片重复 */
+    }
+    .modify{
+        background-image: url('review-btn4.png');
+        background-size: cover; /* 使背景图片覆盖整个容器 */
+        background-position: center; /* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /* 防止背景图片重复 */
+    }
+    .delete{
+        background-image: url('review-btn5.png');
+        background-size: cover; /* 使背景图片覆盖整个容器 */
+        background-position: center; /* 使背景图片在容器中居中 */
+        background-repeat: no-repeat; /* 防止背景图片重复 */
+    }
+
+    .input-box {
+        display: flex;
+        gap: 10px;
+    }
+    .input-box input {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+    }
+    .input-box button {
+        padding: 10px;
+        /* background-color: #6eae73; */
+        background:linear-gradient(45deg,  #e2f2aa, #b6f5b3)!important;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .input-box button:hover {
+        /* background-color: #218838; */
+        background:linear-gradient(45deg,   #eaf2aa, #c5eeb2)!important;
+    }
+
+    .input-container{
+        margin-top: 30px;
+    }
+    .left-box{
+        margin-bottom: 10px;
+    }
+    /* 隐藏下拉菜单 */
+    .dropdown-menu {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 10px;
+        /* background-color: #f1f1f1; */
+        background:linear-gradient(45deg, #e3eca1, #cdefa3)!important;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .dropdown-menu button {
+        padding: 8px;
+        /* background-color: #5caa5c; */
+        background:linear-gradient(45deg, #efda98, #a5e69b)!important;
+        color: rgb(11, 11, 11);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    .dropdown-menu button:hover {
+        background-color: #2e6f2e;
+    }
+    .return-btn{
+        position: absolute;
+        top: 40px;
+        left: 280px;
+        width: 180px;
+        height: 50px;
+        border-radius: 30%;
+        background-color: transparent;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <!-- Left side with two boxes -->
+            <div class="left">
+                <div class="input-container">
+                    <h1>灵感回溯</h1>
+                </div>
+                <div class="left-box">
+                    <div class="charactor">
+                        <h3>&nbsp&nbsp人物</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
+                    </div>
+                    <div class="scene">
+                        <h3>&nbsp&nbsp场景</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，可以展示动态内容。</p>
+                    </div>
+                    <div class="operation">
+                        <h3>&nbsp&nbsp操作</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
+                    </div>
+                    <div class="mainstory">
+                        <h3>&nbsp&nbsp主线故事</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
+                    </div>
+                    <div class="worldview">
+                        <h3>&nbsp&nbsp世界观</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
+                    </div>
+                    <div class="charactor">
+                        <h3>&nbsp&nbsp合体</h3>
+                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
+                    </div>
+                </div>
+                
+            </div>
+
+            <!-- Right side with buttons -->
+            <div class="right">
+                <div class="box">
+                    <button class="btn return-btn" onclick="window.location.href='point-town.html'">返回灵感小镇</button>
+                    <div class="button-container">
+                        <button class="search" onclick="toggleDropdown('dropdown-search')">查找</button>
+                        <div id="dropdown-search" class="dropdown-menu">
+                           <h4>输入标签</h4>
+                            <div class="input-box">
+                                <input type="text" id="searchTagName" placeholder="请输入标签名...">
+                                <!-- <button>提交</button> -->
+                                <button onclick="submitTagSearch()">提交</button>
+                            </div>
+                        </div>
+                        <button class="sort" onclick="toggleDropdown('dropdown-sort')">排序</button>
+                        <div id="dropdown-sort" class="dropdown-menu">
+                            <button onclick="alert('字母顺序')">字母顺序</button>
+                            <button onclick="alert('字母倒序')">字母倒序</button>
+                            <button onclick="alert('时间顺序')">时间顺序</button>
+                            <button onclick="alert('时间倒序')">时间倒序</button>
+                        </div>
+                        
+                        <button class="look" onclick="toggleDropdown('dropdown-look')">查看</button>
+                        <div id="dropdown-look"class="dropdown-menu">
+                            <h4>输入查看内容</h4>
+                            <div class="input-box">
+                                <input type="text" id="themeTitle" placeholder="请输入主题名...">
+                                <!-- <button>确认</button> -->
+                                <button onclick="submitThemeSearch()">确认</button>
+                            </div>
+                        </div>
+
+                        <button class="modify" onclick="toggleDropdown('dropdown-modify')">修改</button>
+                        <div id="dropdown-modify"class="dropdown-menu">
+                            <h4>输入修改内容</h4>
+                            <div class="input-box">
+                                <input type="text" id="modifyTagName" placeholder="请输入要修改内容的标签名...">
+                                <!-- <button>确认</button> -->
+                                <button onclick="modifyTag()">确认</button>
+                            </div>
+                        </div>
+
+                        <button class="delete" onclick="toggleDropdown('dropdown-postil')">删除</button>
+                        <div id="dropdown-postil"class="dropdown-menu">
+                            <h4>输入删除内容</h4>
+                            <div class="input-box">
+                                <input type="text" id="deleteTagName" placeholder="请输入要删除内容的标签名...">
+                                <!-- <button>确认</button> -->
+                                <button onclick="deleteTag()">确认</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn return-btn" onclick="window.location.href='homepage.html'">返回灵感小镇</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换风暴查找按钮的下拉菜单显示与隐藏
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            const isVisible = dropdown.style.display === 'block';
+            
+            // 隐藏所有下拉菜单
+            const allDropdowns = document.querySelectorAll('.dropdown-menu');
+            allDropdowns.forEach(menu => menu.style.display = 'none');
+            
+            // 如果当前下拉菜单没有显示，则显示它
+            if (!isVisible) {
+                dropdown.style.display = 'block';
+            }
+        }
+
+ 
+        function submitTagSearch() {
+            var tagName = document.getElementById('searchTagName').value;
+            if (tagName.trim() === '') {
+                alert('请输入标签名！');
+                return;
+            }
+        
+            fetch('/search-by-tag', { // 替换为你的后端API路径
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ tagName: tagName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 假设data是一个包含灵感信息的数组
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('请求失败，请稍后重试。');
+            });
+        }
+
+        function submitThemeSearch() {
+            var themeName = document.getElementById('themeTitle').value;
+            if (themeName.trim() === '') {
+                alert('请输入主题名！');
+                return;
+            }
+        
+            // 发送AJAX请求到后端
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/search-by-theme', true); // 替换为你的后端API路径
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayResults(response);
+                } else if (xhr.readyState === 4) {
+                    alert('请求失败，请稍后重试。');
+                }
+            };
+            xhr.send(JSON.stringify({ themeName: themeName }));
+        }
+
+        function deleteTag() {
+            var tagName = document.getElementById('deleteTagName').value;
+            if (tagName) {
+                // 使用fetch API发送AJAX请求到后端
+                fetch('/delete-tag', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tagName: tagName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('标签删除成功');
+                        // 可以选择关闭下拉菜单或清空输入框等
+                    } else {
+                        alert('删除失败: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请稍后再试');
+                });
+            } else {
+                alert('请输入要删除的标签名');
+            }
+        }
+
+        function modifyTag() {
+            // 获取用户输入的标签名
+            const tagName = document.getElementById('modifyTagName').value;
+        
+            // 检查标签名是否为空
+            if (!tagName) {
+                alert('请输入标签名！');
+                return;
+            }
+        
+            // 构造请求体（这里假设后端需要一个名为"tagName"的字段）
+            const requestBody = {
+                tagName: tagName,
+                // 可以添加其他需要的字段，比如新的灵感内容等
+                // newContent: "新的灵感内容"
+            };
+        
+            // 将请求体转换为JSON字符串
+            const requestData = JSON.stringify(requestBody);
+        
+            // 发送POST请求到后端（假设后端URL为/api/modify-tag）
+            fetch('/api/modify-tag', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: requestData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 处理后端返回的响应
+                if (data.success) {
+                    alert('修改成功！');
+                } else {
+                    alert('修改失败：' + data.message);
+                }
+            })
+            .catch(error => {
+                // 处理请求错误
+                console.error('Error:', error);
+                alert('请求失败，请稍后再试。');
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建界面</title>
+    <link rel="stylesheet" href="创建界面背景.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(45deg, #67c9db,hsl(136, 47%, 61%)) !important;
+        }
+
+        .register-container {
+            background-color:  rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 1080px;
+            height: 770px;
+            display: flex; /* 使用 flexbox 布局 */
+            justify-content: space-between; /* 使左右列之间有间隔 */
+
+            background-image: url('create2.png'); /* 替换为你的图像路径 */
+            background-size: cover; /* 让背景图像覆盖整个页面 */
+            background-position: center; /* 居中显示背景图像 */
+            background-repeat: no-repeat; /* 防止背景图片重复 */
+        }
+        .register-title {
+            font-size: 24px;
+            color: #455337;
+            margin-bottom: 20px;
+        }
+
+        .left-column {
+            width: 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px;
+            padding: 50px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0);
+
+            flex: 1;
+        }
+
+        .top-section {
+            text-align: center;
+        }
+        .top-section img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .bottom-section button {
+            width: 350px;
+            padding: 40px;
+            height:450px;
+            font-size: 24px;
+            background-color: #69785b;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+        .bottom-section button:hover {
+            background-color: rgba(151, 161, 138, 0.6); /* 使用半透明的背景色 */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 60px rgba(255, 255, 255, 0.3); /* 添加发光效果 */
+            filter: brightness(1); /* 增加亮度 */
+        }
+
+
+        .right-column {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+            box-sizing: border-box;
+
+            flex: 1; 
+        }
+        .button-row {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            margin-left: 60px;/*改变按钮之间的水平间距*/
+        }
+        .right-column button {
+            width: 180px; 
+            padding: 40px; 
+            font-size: 24px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #67c9db,hsl(136, 47%, 61%)) !important;
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            box-sizing: border-box; /* Ensures padding doesn't affect button size */
+        }
+        .right-column button:hover {
+            background: linear-gradient(45deg, #3aa9bc,hsl(136, 50%, 51%)) !important;
+        }
+        .middle-row {
+            justify-content: center; /* Centers the single button in the middle row */
+        }
+
+        /* 添加返回按钮容器的样式 */
+        .back-to-login-wrapper {
+            position: absolute; /* 使用绝对定位 */
+            top: 0px; /* 距离顶部10px */
+            right: 10px; /* 距离右侧10px */
+            display: flex; /* 使用flex布局使按钮居中 */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+        }
+        .back-to-login {
+            padding: 10px 20px; /* 设置内边距 */
+            font-size: 16px; /* 设置字体大小 */
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #67c9db,hsl(136, 47%, 61%)) !important;
+            color: white; /* 设置文字颜色 */
+            border: none; /* 去除边框 */
+            border-radius: 5px; /* 设置圆角 */
+            cursor: pointer; /* 设置鼠标悬停时显示为手型 */
+        }
+        .back-to-login:hover {
+            background: linear-gradient(45deg, #3aa9bc,hsl(136, 50%, 51%)) !important;
+        }
+        .right-column {
+            position: relative; /* 添加相对定位 */
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="left-column">
+            <div class="top-section">
+                <!-- 假设你有一个头像图片的URL，这里用占位符代替 -->
+                <img src="https://via.placeholder.com/100" alt="用户头像">
+                <p id="username">用户名</p> <!-- 这里可以动态插入用户名 -->
+                <p id="email">邮箱</p>
+            </div>
+        </div>
+        <div class="right-column">
+            <div class="back-to-login-wrapper">
+                <a onclick="window.location.href='homepage.html'" class="back-to-login">&lt;- 返回灵感小镇</a>
+            </div>
+            <div class="button-row">
+                <button onclick="window.location.href='create-charactor.html'">人物</button>
+                <button onclick="window.location.href='create-scene.html'">场景</button>
+                <button onclick="window.location.href='create-worldview.html'">世界观</button>
+            </div>
+            <div class="button-row">
+                <button onclick="window.location.href='create-operation.html'">操作</button>
+                <button onclick="window.location.href='create-mainstory.html'">故事主线</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //请求名字和邮箱
+       const token = localStorage.getItem('jwt_token');
+    //alert('Token: ' + token); 
+    if (token) {
+        fetch('https://localhost:7050/api/auth/info', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Authentication failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('请求成功:', data); 
+            const username = data.username;
+            const email = data.email;
+            document.getElementById('username').innerText = username;
+            document.getElementById('email').innerText = email;
+        })
+        .catch(error => {
+            console.error('请求失败:', error);
+            document.getElementById('username').innerText = '加载失败';
+            document.getElementById('email').innerText = '加载失败';
+        });
+    } else {
+        console.error('没有找到token');
+    }
+    </script>
+</body>
+</html>

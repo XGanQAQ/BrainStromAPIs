@@ -170,14 +170,11 @@
                 },
                 body: JSON.stringify({ email, username, password }),
             })
+            
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    alert('注册成功！');
+                    alert(data.message);
                     window.location.href = '登陆界面.html'; // 注册成功后跳转到登录页面
-                } else {
-                    alert('注册失败: ' + data.message);
-                }
             })
             .catch(error => {
                  console.error('Error:', error);

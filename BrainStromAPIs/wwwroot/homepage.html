@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>灵感小镇</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #85d0ee, #b897e3) ;
+            color: white;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Outer transparent container */
+        .module-container {
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            background-image: url('4.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 80%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: row-reverse; /* 将 sidebar 放到右边 */
+            align-items: flex-start;
+            width: 1080px;
+            height: 800px;
+            gap: 30px;
+        }
+      
+        .box{
+            flex-direction: column;
+            flex-wrap: wrap; 
+        }
+
+        /* Sidebar / Personal info section */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            width: 300px;
+            height: 250px;
+            text-align: center;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+            margin-right: 30px;
+        }
+
+        .sidebar img {
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .sidebar h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .sidebar p {
+            font-size: 1rem;
+            /* color: #767070; */
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .sidebar .bio {
+            font-size: 0.9rem;
+            color:white;
+            margin-bottom: 20px;
+        }
+
+        /* Main content area (cards) */
+        .main-content {
+
+            display: flex;
+            flex-direction: row; /* 横向排列卡片 */
+            justify-content: center; /* 居中对齐 */
+            flex: 1; /* 占据剩余空间 */
+            gap: 20px; /* 卡片间距 */
+            margin-left: 0px;
+            margin-top: 30px;
+        }
+        /* Main content area (cards) */
+        .main-content2 {
+            display: flex;
+            flex-direction: row; /* 横向排列卡片 */
+            justify-content: center; /* 居中对齐 */
+            flex: 1; /* 占据剩余空间 */
+            gap: 20px; /* 卡片间距 */
+            margin-left: 0px;
+            margin-top: 30px;
+            }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1); /* 半透明背景 */
+            border-radius: 10px;
+            padding: 30px;
+            width: 300px;
+            height: 250px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .card1{
+            background-image: url('sea.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+        }
+        .card2{
+            background-image: url('create.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+        }
+        .card3{
+            background-image: url('together.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+        } 
+        .card4{
+            background-image: url('review.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .card p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .card button {
+            background-color: #88c9c2;
+            border: none;
+            padding: 10px 20px;
+            color: rgb(245, 249, 246);
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .card button:hover {
+            background-color: #85a3e9;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 30px;
+            width: 620px;
+            text-align: center;
+            margin-left: auto;  /* 自动推到右边 */
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-image: url('5.png'); 
+            background-size: cover; /*使背景图片覆盖整个容器*/
+            background-position: center;/*使背景图片在容器中居中*/
+            background-repeat: no-repeat;/* 防止背景图片重复*/
+        }
+
+
+        .container .clickable-text { /* 修改为选择器 .clickable-text */
+            display: inline-block;
+            text-decoration: underline;
+            color: #2575fc; /* 设置文字颜色 */
+            cursor: pointer; /* 鼠标悬浮时显示为手形 */
+            font-size: 1.2rem;
+            transition: color 0.3s ease; /* 平滑过渡效果 */
+        }
+
+        .container h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .container .clickable-text:hover { /* 修改为选择器 .clickable-text */
+            color: #6a11cb; /* 鼠标悬浮时改变颜色 */
+        }
+        /* Responsive Design */
+        @media screen and (max-width: 480px) {
+    body {
+        flex-direction: column;
+        padding: 10px; /* 边距调整 */
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+}
+    </style>
+</head>
+<body>
+
+    <!-- Outer module container -->
+    <div class="module-container">
+        <!-- Sidebar / Personal Info -->
+        <div class="right">
+            <div class="sidebar">
+                <img src="https://via.placeholder.com/120" alt="Avatar">
+                <h2 id="username">用户名加载中...</h2> <!-- 默认显示 "用户名加载中..." -->
+                <p id="email">邮箱加载中...</p>  <!-- 默认显示 "邮箱加载中..." -->
+            </div>
+            <!-- <div class="container">
+                <h2>看这里！</h2>
+                <a href="#" class="clickable-text">关于我们</a>
+            </div> -->
+        </div>
+        <div class="left">
+            <div class="box">
+                <div class="main-content">
+                    <div class="card card1">
+                        <h2>灵感之海</h2>
+                        <p>查看灵感记录</p>
+                        <!-- <button>点击进入</button> -->
+                        <button class="btn btn1" onclick="window.location.href='sea.html'">点击进入</button>
+                    </div>
+            
+                    <div class="card card2">
+                        <h2>创建灵感</h2>
+                        <p>开始创建你的灵感</p>
+                        <!-- <button>点击开始</button> -->
+                        <button class="btn btn2" onclick="window.location.href='create.html'">点击开始</button>
+                    </div>
+                </div>
+                <div class="main-content2">
+                    <div class="card card3">
+                        <h2>灵感凝结</h2>
+                        <p>将所选择的灵感随机组合</p>
+                        <!-- <button>点击开始</button> -->
+                        <button class="btn btn3" onclick="window.location.href='point-together.html'">点击开始</button>
+                    </div>
+        
+                    <div class="card card4">
+                        <h2>灵感回溯</h2>
+                        <p>打开你的所创建过的灵感</p>
+                        <!-- <button>点击开始</button> -->
+                        <button class="btn btn4" onclick="window.location.href='review.html'">点击开始</button>
+                    </div>
+                </div>
+                <div class="container">
+                    <h2>看这里！</h2>
+                    <a href="#" class="clickable-text">关于我们</a>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</body>  
+<script>
+    const token = localStorage.getItem('jwt_token');
+    //alert('Token: ' + token); 
+    if (token) {
+        fetch('https://localhost:7050/api/auth/info', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Authentication failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('请求成功:', data); 
+            const username = data.username;
+            const email = data.email;
+            document.getElementById('username').innerText = username;
+            document.getElementById('email').innerText = email;
+        })
+        .catch(error => {
+            console.error('请求失败:', error);
+            document.getElementById('username').innerText = '加载失败';
+            document.getElementById('email').innerText = '加载失败';
+        });
+    } else {
+        console.error('没有找到token');
+    }
+</script>
+
+</html>
+
+
