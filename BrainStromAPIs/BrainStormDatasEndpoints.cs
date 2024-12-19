@@ -87,6 +87,14 @@ public static class BrainStormDatasEndpoints
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
+            foreach (var tagName in model.TagsName)
+            {
+                if (db.Tags.FirstOrDefault(t => t.Name == tagName) == null)
+                {
+                    return Results.BadRequest("不存在此标签，请检查你是否已经创建当前标签.");
+                }
+            }
+
             var idea = new Idea
             {
                 Title = model.Title,
@@ -407,7 +415,7 @@ public static class BrainStormDatasEndpoints
 
         #endregion
         #region 标签的CRUD
-        app.MapGet("/api/ideas/tags", async (BrainStormDbContext db, HttpContext httpContext) =>
+        app.MapGet("/api/tags", async (BrainStormDbContext db, HttpContext httpContext) =>
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
@@ -420,7 +428,7 @@ public static class BrainStormDatasEndpoints
     .WithDescription("查询当前用户所有的标签")
         .WithName("GetTags")
         .RequireAuthorization();
-        app.MapPost("/api/ideas/tags", async (BrainStormDbContext db, HttpContext httpContext, string tagName) =>
+        app.MapPost("/api/tags", async (BrainStormDbContext db, HttpContext httpContext, string tagName) =>
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
@@ -438,7 +446,7 @@ public static class BrainStormDatasEndpoints
             .WithDescription("新建一个标签")
             .WithName("CreateTag")
             .RequireAuthorization();
-        app.MapDelete("/api/ideas/tags/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
+        app.MapDelete("/api/tags/{id}", async (BrainStormDbContext db, HttpContext httpContext, int id) =>
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
@@ -457,6 +465,7 @@ public static class BrainStormDatasEndpoints
             return Results.Ok(new { message = "Tag deleted successfully." });
         })
             .WithDescription("根据标签id删除标签（删除当前用户的）");
+
         #endregion
     }
 
