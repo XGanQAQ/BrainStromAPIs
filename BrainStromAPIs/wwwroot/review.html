@@ -15,7 +15,10 @@
         justify-content: center;
         align-items: center;
     }
-
+    .article-id {
+        font-size: 0.8em; /* 设置较小的字体大小 */
+        color: gray; /* 设置颜色为灰色 */
+    }
     .container {
         width: 100%;
         max-width: 1200px;
@@ -68,49 +71,13 @@
         flex-direction: column;
         gap: 20px;
     }
-    .charactor {
+    /* 每条数据的样式 */
+    .data-item {
         background-color: rgba(255, 255, 255, 0.1);
         overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
+        flex-grow: 1; /* 让输出框填满 */
         width: 600px;
         height: 100px;
-        margin-top: 20px;
-        margin-bottom: 30px;
-        margin-left: 20px;
-    }
-    .scene {
-        background-color: rgba(255, 255, 255, 0.1);
-        overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
-        width: 600px;
-        height: 100px;
-        margin-bottom: 30px;
-        margin-left: 20px;
-    }
-    .operation {
-        background-color: rgba(255, 255, 255, 0.1);
-        overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
-        width: 600px;
-        height: 120px;
-        margin-bottom: 30px;
-        margin-left: 20px;
-    }
-    .mainstory {
-        background-color: rgba(255, 255, 255, 0.1);
-        overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
-        width: 600px;
-        height: 120px;
-        margin-bottom: 30px;
-        margin-left: 20px;
-    }
-    .worldview {
-        background-color: rgba(255, 255, 255, 0.1);
-        overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
-        width: 600px;
-        height: 120px;
         margin-bottom: 30px;
         margin-left: 20px;
     }
@@ -122,6 +89,12 @@
         height: 120px;
         margin-bottom: 30px;
         margin-left: 20px;
+    }
+    /* 显示 JSON 数据的容器 */
+    #content {
+        max-height: 90vh; /* 最大高度设为视口高度的90% */
+        overflow-y: scroll; /* 允许垂直滚动 */
+        padding: 20px;
     }
     .left-box {
         background-color: rgba(255, 255, 255, 0.1);
@@ -259,33 +232,10 @@
                 <div class="input-container">
                     <h1>灵感回溯</h1>
                 </div>
-                <div class="left-box">
-                    <div class="charactor">
-                        <h3>&nbsp&nbsp人物</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="scene">
-                        <h3>&nbsp&nbsp场景</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，可以展示动态内容。</p>
-                    </div>
-                    <div class="operation">
-                        <h3>&nbsp&nbsp操作</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="mainstory">
-                        <h3>&nbsp&nbsp主线故事</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="worldview">
-                        <h3>&nbsp&nbsp世界观</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="charactor">
-                        <h3>&nbsp&nbsp合体</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
+                <div id="content" class="left-box">
+
                 </div>
-                
+
             </div>
 
             <!-- Right side with buttons -->
@@ -295,33 +245,33 @@
                     <div class="button-container">
                         <button class="search" onclick="toggleDropdown('dropdown-search')">查找</button>
                         <div id="dropdown-search" class="dropdown-menu">
-                           <h4>输入标签</h4>
+                            <h4>输入标签</h4>
                             <div class="input-box">
                                 <input type="text" id="searchTagName" placeholder="请输入标签名...">
                                 <!-- <button>提交</button> -->
-                                <button onclick="submitTagSearch()">提交</button>
+                                <button onclick="SearchUserIdeasByTag()">提交</button>
                             </div>
                         </div>
-                        <button class="sort" onclick="toggleDropdown('dropdown-sort')">排序</button>
-                        <div id="dropdown-sort" class="dropdown-menu">
-                            <button onclick="alert('字母顺序')">字母顺序</button>
-                            <button onclick="alert('字母倒序')">字母倒序</button>
-                            <button onclick="alert('时间顺序')">时间顺序</button>
-                            <button onclick="alert('时间倒序')">时间倒序</button>
-                        </div>
-                        
+
+
                         <button class="look" onclick="toggleDropdown('dropdown-look')">查看</button>
-                        <div id="dropdown-look"class="dropdown-menu">
+                        <div id="dropdown-look" class="dropdown-menu">
                             <h4>输入查看内容</h4>
                             <div class="input-box">
                                 <input type="text" id="themeTitle" placeholder="请输入主题名...">
                                 <!-- <button>确认</button> -->
-                                <button onclick="submitThemeSearch()">确认</button>
+                                <button onclick="SearchUserIdeasByTheme()">确认</button>
                             </div>
                         </div>
 
+                        <button class="sort" onclick="toggleDropdown('dropdown-sort')">排序</button>
+                        <div id="dropdown-sort" class="dropdown-menu">
+                            <button onclick="changeOrderRule('order')">时间顺序</button>
+                            <button onclick="changeOrderRule('descend')">时间倒序</button>
+                        </div>
+
                         <button class="modify" onclick="toggleDropdown('dropdown-modify')">修改</button>
-                        <div id="dropdown-modify"class="dropdown-menu">
+                        <div id="dropdown-modify" class="dropdown-menu">
                             <h4>输入修改内容</h4>
                             <div class="input-box">
                                 <input type="text" id="modifyTagName" placeholder="请输入要修改内容的标签名...">
@@ -331,7 +281,7 @@
                         </div>
 
                         <button class="delete" onclick="toggleDropdown('dropdown-postil')">删除</button>
-                        <div id="dropdown-postil"class="dropdown-menu">
+                        <div id="dropdown-postil" class="dropdown-menu">
                             <h4>输入删除内容</h4>
                             <div class="input-box">
                                 <input type="text" id="deleteTagName" placeholder="请输入要删除内容的标签名...">
@@ -348,6 +298,12 @@
 
     <script>
         // 切换风暴查找按钮的下拉菜单显示与隐藏
+        var rule = "order" //默认顺序规则
+        function changeOrderRule(ruleName) {
+            rule = ruleName;
+            alert(`你的排序规则已经成功切换为了${rule}  ` + "请点击重新点击查看刷新排列");
+        }
+
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
             const isVisible = dropdown.style.display === 'block';
@@ -363,106 +319,163 @@
         }
 
  
-        function submitTagSearch() {
+        //获得所有用户灵感通过标签
+        function SearchUserIdeasByTag(rule) {
+            const token = localStorage.getItem('jwt_token');
             var tagName = document.getElementById('searchTagName').value;
             if (tagName.trim() === '') {
                 alert('请输入标签名！');
                 return;
             }
-        
-            fetch('/search-by-tag', { // 替换为你的后端API路径
-                method: 'POST',
+
+            //因为还没有输入规则的界面，所有先使用顺序规则
+            //rule = "order";
+
+            fetch(`/api/ideas/SearchByTag/${rule}/?tagName=${tagName}`, { // 替换为你的后端API路径
+                method: 'Get',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tagName: tagName })
+
             })
-            .then(response => response.json())
-            .then(data => {
-                // 假设data是一个包含灵感信息的数组
-                displayResults(data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('请求失败，请稍后重试。');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    // 假设data是一个包含灵感信息的数组
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请稍后重试。');
+                });
         }
 
-        function submitThemeSearch() {
+        //获得所有用户灵感通过主题
+        function SearchUserIdeasByTheme(rule) {
+            const token = localStorage.getItem('jwt_token');
             var themeName = document.getElementById('themeTitle').value;
             if (themeName.trim() === '') {
                 alert('请输入主题名！');
                 return;
             }
-        
-            // 发送AJAX请求到后端
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/search-by-theme', true); // 替换为你的后端API路径
-            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    displayResults(response);
-                } else if (xhr.readyState === 4) {
+
+            //因为还没有输入规则的界面，所有先使用顺序规则
+            //rule = "order";
+
+            fetch(`/api/ideas/SearchByTheme/${rule}/?themeName=${themeName}`, { // 替换为你的后端API路径
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // 假设data是一个包含灵感信息的数组
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                     alert('请求失败，请稍后重试。');
-                }
-            };
-            xhr.send(JSON.stringify({ themeName: themeName }));
+                });
         }
 
-        function deleteTag() {
-            var tagName = document.getElementById('deleteTagName').value;
-            if (tagName) {
+        window.onload = GetUsersIdeas();
+        function GetUsersIdeas() {
+            const token = localStorage.getItem('jwt_token');
+            fetch(`/api/ideas`, { // 替换为你的后端API路径
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("读取玩家灵感错误，错误消息：" + data.message)
+                    };
+                    return response.json()
+                })
+                .then(data => {
+                    // 假设data是一个包含灵感信息的数组
+                    console.log(data);
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请稍后重试。');
+                });
+        }
+
+        async function deleteTag() {
+            const token = localStorage.getItem('jwt_token');
+            var ideaId = document.getElementById('deleteTagName').value;
+            if (ideaId) {
                 // 使用fetch API发送AJAX请求到后端
-                fetch('/delete-tag', {
-                    method: 'POST',
+                await fetch(`/api/ideas/${ideaId}`, {
+                    method: 'DELETE',
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ tagName: tagName })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        alert('标签删除成功');
-                        // 可以选择关闭下拉菜单或清空输入框等
-                    } else {
-                        alert('删除失败: ' + data.error);
-                    }
+                        alert(data.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('请求失败，请稍后再试');
                 });
+                refreash();
             } else {
-                alert('请输入要删除的标签名');
-            }
+                alert('请输入要删除的ID');
+            }           
         }
 
         function modifyTag() {
             // 获取用户输入的标签名
-            const tagName = document.getElementById('modifyTagName').value;
+            const token = localStorage.getItem('jwt_token');
+            var ideaId = document.getElementById('modifyTagName').value;
         
             // 检查标签名是否为空
-            if (!tagName) {
-                alert('请输入标签名！');
+            if (!ideaId) {
+                alert('请输入ID！');
                 return;
             }
-        
-            // 构造请求体（这里假设后端需要一个名为"tagName"的字段）
+
+            var orign = findIdeaById(ideaId);
+
+            if (!orign) {
+                alert('未找到对应的文章！');
+                return;
+            }
+
+            // 弹出窗口让用户输入新的标题和描述
+            var newTitle = prompt("请输入新的标题：", orign.title);  // 提供原标题作为默认值
+            if (newTitle === null) return;  // 如果用户取消输入
+
+            var newDescription = prompt("请输入新的描述：", orign.description);  // 提供原描述作为默认值
+            if (newDescription === null) return;  // 如果用户取消输入
+
+
+            console.log("orign= "+ orign);
+            // 构造请求体（使用用户输入的数据）
             const requestBody = {
-                tagName: tagName,
-                // 可以添加其他需要的字段，比如新的灵感内容等
-                // newContent: "新的灵感内容"
+                title: newTitle,
+                description: newDescription,
             };
         
             // 将请求体转换为JSON字符串
             const requestData = JSON.stringify(requestBody);
         
             // 发送POST请求到后端（假设后端URL为/api/modify-tag）
-            fetch('/api/modify-tag', {
-                method: 'POST',
+            fetch(`/api/ideas/${ideaId}`, {
+                method: 'PUT',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: requestData
@@ -470,17 +483,71 @@
             .then(response => response.json())
             .then(data => {
                 // 处理后端返回的响应
-                if (data.success) {
-                    alert('修改成功！');
-                } else {
-                    alert('修改失败：' + data.message);
-                }
+                alert(data.message);
             })
             .catch(error => {
                 // 处理请求错误
                 console.error('Error:', error);
                 alert('请求失败，请稍后再试。');
             });
+        }
+
+        async function findIdeaById(id) {
+            const token = localStorage.getItem('jwt_token');
+
+            try {
+                const response = await fetch(`/api/ideas/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('请求失败，未能获取数据');
+                }
+
+                const data = await response.json();
+                console.log("the data = ", data);
+                return data;  // 返回数据
+            } catch (error) {
+                console.error('Error:', error);
+                alert('请求失败，请稍后再试。');
+                return null;  // 如果发生错误，返回 null
+            }
+        }
+
+
+        function displayResults(data) {
+            const leftBox = document.getElementById('content');
+            clearAllChild('content');
+            // 遍历 JSON 数据并显示在页面上
+            data.forEach(item => {
+                const dataItemDiv = document.createElement('div');
+                dataItemDiv.classList.add('data-item');
+
+                // 创建显示 JSON 内容的元素
+                dataItemDiv.innerHTML = `               
+                <h3>&nbsp&nbsp${item.title}<span style="font-size: 0.8em; color: gray;">  ID=${item.id}</h3>
+                <p>&nbsp&nbsp${item.description}</p>
+                `;
+
+                // 将每个数据项添加到页面上
+                leftBox.appendChild(dataItemDiv);
+            });
+        }
+
+        function clearAllChild(divName) {
+            const parentDiv = document.getElementById(divName);
+            while (parentDiv.firstChild) {
+                parentDiv.removeChild(parentDiv.firstChild);
+            }
+        }
+
+        function refreash() {
+            clearAllChild('content');
+            GetUsersIdeas();
         }
     </script>
 </body>

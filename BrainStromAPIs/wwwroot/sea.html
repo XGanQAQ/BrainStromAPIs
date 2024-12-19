@@ -15,7 +15,10 @@
         justify-content: center;
         align-items: center;
     }
-
+    .article-id {
+        font-size: 0.8em; /* 设置较小的字体大小 */
+        color: gray; /* 设置颜色为灰色 */
+    }
     .container {
         width: 100%;
         max-width: 1200px;
@@ -35,12 +38,6 @@
         height: 800px;
         gap: 20px; 
     }
-    .content {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        flex-grow: 1;  /* 使内容区域填满 */
-    }
     .left {
         width: 45%;
         display: flex;
@@ -48,6 +45,13 @@
         gap: 20px;
         flex-grow: 1;  /* 让左侧区域填满 */
     }
+    .content {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-grow: 1;  使内容区域填满 
+    }
+
     
     .right {
         width: 15%;
@@ -67,13 +71,13 @@
         flex-direction: column;
         gap: 20px;
     }
-    .charactor {
+        /* 每条数据的样式 */    
+    .data-item {
         background-color: rgba(255, 255, 255, 0.1);
         overflow-y: scroll;
-        flex-grow: 1;  /* 让输出框填满 */
+        flex-grow: 1; /* 让输出框填满 */
         width: 600px;
         height: 100px;
-        margin-top: 20px;
         margin-bottom: 30px;
         margin-left: 20px;
     }
@@ -201,6 +205,12 @@
     .input-container{
         margin-top: 30px;
     }
+    /* 显示 JSON 数据的容器 */
+    #content {
+        max-height: 90vh; /* 最大高度设为视口高度的90% */
+        overflow-y: scroll; /* 允许垂直滚动 */
+        padding: 20px;
+    }
     .left-box{
         margin-bottom: 10px;
     }
@@ -248,12 +258,13 @@
                 <div class="input-container">
                     <h1>灵感之海</h1>
                 </div>
-                <div class="left-box">
-                    <div class="charactor">
+                <div  id="content" class="left-box">
+                    <!-- 这里是显示的地方 -->
+                    <!--<div class="charactor">
                         <h3>&nbsp&nbsp人物</h3>
                         <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="scene">
+                    </div>-->
+                    <!--<div class="scene">
                         <h3>&nbsp&nbsp场景</h3>
                         <p>&nbsp&nbsp这里是一个输出框，可以展示动态内容。</p>
                     </div>
@@ -272,7 +283,7 @@
                     <div class="charactor">
                         <h3>&nbsp&nbsp合体</h3>
                         <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
+                    </div>-->
                 </div>
                 
             </div>
@@ -282,32 +293,30 @@
                 <div class="box">
                     <button class="btn return-btn" onclick="window.location.href='point-town.html'">返回灵感小镇</button>
                     <div class="button-container">
-                        <button class="search" onclick="toggleDropdown('dropdown-search')">查找</button>
+                        <button class="search" onclick="toggleDropdown('dropdown-search')">通过标签查找</button>
                         <div id="dropdown-search"  class="dropdown-menu">
                            <h4>输入查找内容</h4>
                             <div class="input-box">
                                 <input type="text" id="searchTagName" placeholder="请输入标签名...">
                                 <!-- <button>提交</button> -->
-                                <button onclick="submitTagSearch()">提交</button>
+                                <button onclick="SearchAllUserIdeasByTag()">提交</button>
                             </div>
                         </div>
-                        <button class="sort" onclick="toggleDropdown('dropdown-sort')">排序</button>
-                        <div id="dropdown-sort" class="dropdown-menu">
-                            <button onclick="alert('字母顺序')">字母顺序</button>
-                            <button onclick="alert('字母倒序')">字母倒序</button>
-                            <button onclick="alert('时间顺序')">时间顺序</button>
-                            <button onclick="alert('时间倒序')">时间倒序</button>
-                        </div>
-                        
-                        <button class="look" onclick="toggleDropdown('dropdown-modify')">查看</button>
+                        <button class="look" onclick="toggleDropdown('dropdown-modify')">通过主题查看</button>
                         <div id="dropdown-modify"class="dropdown-menu">
                             <h4>输入查看内容</h4>
                             <div class="input-box">
                                 <input type="text" id="themeTitle" placeholder="请输入主题名...">
                                 <!-- <button>确认</button> -->
-                                <button onclick="submitThemeSearch()">确认</button>
+                                <button onclick="SearchAllUserIdeasByTheme()">确认</button>
                             </div>
                         </div>
+                        <button class="sort" onclick="toggleDropdown('dropdown-sort')">排序</button>
+                        <div id="dropdown-sort" class="dropdown-menu">
+                            <button onclick="changeOrderRule('order')">时间顺序</button>
+                            <button onclick="changeOrderRule('descend')">时间倒序</button>
+                        </div>
+                        
                     </div>
                     <button class="btn return-btn" onclick="window.location.href='homepage.html'">返回灵感小镇</button>
                 </div>
@@ -316,6 +325,12 @@
     </div>
 
     <script>
+        var rule = "order" //默认顺序规则
+        function changeOrderRule(ruleName) {
+            rule = ruleName;
+            alert(`你的排序规则已经成功切换为了${rule}  ` + "请点击重新点击查看刷新排列");
+        }
+
         // 切换风暴查找按钮的下拉菜单显示与隐藏
         function toggleDropdown(dropdownId) {
             const dropdown = document.getElementById(dropdownId);
@@ -331,19 +346,25 @@
             }
         }
 
-        function submitTagSearch() {
+        //获得所有用户灵感通过标签
+        function SearchAllUserIdeasByTag(rule) {
+            const token = localStorage.getItem('jwt_token');
             var tagName = document.getElementById('searchTagName').value;
             if (tagName.trim() === '') {
                 alert('请输入标签名！');
                 return;
             }
-        
-            fetch('/search-by-tag', { // 替换为你的后端API路径
-                method: 'POST',
+
+            //因为还没有输入规则的界面，所有先使用顺序规则
+            //rule = "order";
+            
+            fetch(`/api/ideas/SearchByTag/${rule}/all?tagName=${tagName}`, { // 替换为你的后端API路径
+                method: 'Get',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tagName: tagName })
+                
             })
             .then(response => response.json())
             .then(data => {
@@ -356,26 +377,88 @@
             });
         }
 
-        function submitThemeSearch() {
+        //获得所有用户灵感通过主题
+        function SearchAllUserIdeasByTheme(rule) {
+            const token = localStorage.getItem('jwt_token');
             var themeName = document.getElementById('themeTitle').value;
             if (themeName.trim() === '') {
                 alert('请输入主题名！');
                 return;
             }
-        
-            // 发送AJAX请求到后端
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/search-by-theme', true); // 替换为你的后端API路径
-            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    displayResults(response);
-                } else if (xhr.readyState === 4) {
-                    alert('请求失败，请稍后重试。');
-                }
-            };
-            xhr.send(JSON.stringify({ themeName: themeName }));
+
+            //因为还没有输入规则的界面，所有先使用顺序规则
+            //rule = "order";
+
+            fetch(`/api/ideas/SearchByTheme/${rule}/all?themeName=${themeName}`, { // 替换为你的后端API路径
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 假设data是一个包含灵感信息的数组
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('请求失败，请稍后重试。');
+            });
+        }
+
+        window.onload = GetAllUsersIdeas();
+        function GetAllUsersIdeas() {
+            const token = localStorage.getItem('jwt_token');
+            fetch(`/api/ideas/All`, { // 替换为你的后端API路径
+                method: 'Get',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log("读取所有玩家灵感错误，错误消息：" + response.message)
+                    };
+                    return response.json()
+                })
+                .then(data => {                    
+                    // 假设data是一个包含灵感信息的数组
+                    console.log(data);
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('请求失败，请稍后重试。(请至少已经存储了一条灵感)');
+                });
+        }
+        //
+        function displayResults(data) {
+            const leftBox = document.getElementById('content');
+            clearAllChild('content');
+            // 遍历 JSON 数据并显示在页面上            
+            data.forEach(item => {
+                const dataItemDiv = document.createElement('div');
+                dataItemDiv.classList.add('data-item');
+                // 创建显示 JSON 内容的元素
+                dataItemDiv.innerHTML = `               
+                <h3>&nbsp&nbsp${item.title}<span style="font-size: 0.8em; color: gray;">  ID=${item.id}</h3>
+                <p>&nbsp&nbsp${item.description}</p>
+                `;
+
+                // 将每个数据项添加到页面上
+                leftBox.appendChild(dataItemDiv);
+            });
+        }
+
+        function clearAllChild(divName) {
+            const parentDiv = document.getElementById(divName);
+            while (parentDiv.firstChild) {
+                parentDiv.removeChild(parentDiv.firstChild);
+            }
         }
     </script>
 </body>

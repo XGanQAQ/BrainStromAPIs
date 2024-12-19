@@ -175,17 +175,11 @@ public static class BrainStormDatasEndpoints
 
             if (idea == null)
             {
-                return Results.NotFound();
+                return Results.NotFound(new {message = "Can't find the idea."});
             }
 
             idea.Title = model.Title;
             idea.Description = model.Description;
-            idea.ThemeTitle = model.ThemeTitle;
-            idea.TagsName = model.TagsName;
-
-
-            idea.Theme = await db.Themes.FirstOrDefaultAsync(t => t.Title == idea.ThemeTitle);
-            idea.Tags = await db.Tags.Where(t => idea.TagsName.Contains(t.Name)).ToListAsync();
 
 
             await db.SaveChangesAsync();
@@ -252,6 +246,36 @@ public static class BrainStormDatasEndpoints
             .WithName("GetIdeasByTheme")
             .RequireAuthorization();
 
+        //根据主题名查找并返回所有灵感，默认按照时间顺序排序
+        app.MapGet("/api/ideas/SearchByTheme/{rule}/all", async (BrainStormDbContext db, HttpContext httpContext, string themeName, string? rule) =>
+        {         
+
+            if (string.IsNullOrEmpty(themeName) || db.Themes.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("ThemeName is null or empty.");
+            }
+
+            List<Idea> ideas;
+            if (rule == "descend")
+            {
+                ideas = await db.Ideas
+                .Where(i => i.ThemeTitle == themeName)
+                .OrderByDescending(i => i.CreatedAt)
+                .ToListAsync();
+            }
+            else
+            {
+                ideas = await db.Ideas
+                .Where(i => i.ThemeTitle == themeName)
+                .OrderBy(i => i.CreatedAt)
+                .ToListAsync();
+            }
+            return Results.Ok(ideas);
+        })
+            .WithDescription("根据主题名返回所有用户灵感")
+            .WithName("GetAllUserIdeasByTheme")
+            .RequireAuthorization();
+
         //根据标签名查找并返回所有灵感,默认按照时间顺序排序
         app.MapGet("/api/ideas/SearchByTag/{rule}", async (BrainStormDbContext db, HttpContext httpContext, string tagName, string? rule) =>
         {
@@ -262,14 +286,55 @@ public static class BrainStormDatasEndpoints
                 return Results.BadRequest("TagName is null or empty.");
             }
 
-            var idea = await db.Ideas
+            List<Idea> ideas;
+            if (rule == "descend")
+            {
+                ideas = await db.Ideas
                 .Where(i => i.UserId == userId && i.TagsName.Contains(tagName))
                 .OrderBy(i => i.CreatedAt)
                 .ToListAsync();
-            return Results.Ok(idea);
+            }
+            else
+            {
+                ideas = await db.Ideas
+                .Where(i => i.UserId == userId && i.TagsName.Contains(tagName))
+                .OrderByDescending(i => i.CreatedAt)
+                .ToListAsync();
+            }
+            return Results.Ok(ideas);
         })
             .WithDescription("根据标签名返回所有灵感")
             .WithName("GetIdeasByTag")
+            .RequireAuthorization();
+
+        //根据标签名查找并返回所有用户灵感,默认按照时间顺序排序
+        app.MapGet("/api/ideas/SearchByTag/{rule}/all", async (BrainStormDbContext db, HttpContext httpContext, string tagName, string? rule) =>
+        {          
+
+            if (string.IsNullOrEmpty(tagName) || db.Tags.FirstOrDefault() == null)
+            {
+                return Results.BadRequest("TagName is null or empty.");
+            }
+            List<Idea> ideas;
+            if(rule == "descend")
+            {
+                ideas = await db.Ideas
+                .Where(i => i.TagsName.Contains(tagName))
+                .OrderBy(i => i.CreatedAt)
+                .ToListAsync();
+            }
+            else
+            {
+                ideas = await db.Ideas
+                .Where(i => i.TagsName.Contains(tagName))
+                .OrderByDescending(i => i.CreatedAt)
+                .ToListAsync();
+            }
+
+            return Results.Ok(ideas);
+        })
+            .WithDescription("根据标签名返回所有用户的灵感")
+            .WithName("GetAllUserIdeasByTag")
             .RequireAuthorization();
 
         //根据主题名和标签名查找并返回所有灵感,默认按照时间顺序排序
@@ -287,13 +352,22 @@ public static class BrainStormDatasEndpoints
                 return Results.BadRequest("TagName is null or empty.");
             }
             List<Idea> ideas;
+            if(rule == "descend")
+            {
                 ideas = await db.Ideas
                 .Where(i => i.UserId == userId && i.ThemeTitle == themeName && i.TagsName.Contains(tagName))
                 .OrderBy(i => i.CreatedAt)
                 .ToListAsync();
+            }
+            else
+            {
+                ideas = await db.Ideas
+                .Where(i => i.UserId == userId && i.ThemeTitle == themeName && i.TagsName.Contains(tagName))
+                .OrderByDescending(i => i.CreatedAt)
+                .ToListAsync();
+            }
+
             return Results.Ok(ideas);
-
-
         })
             .WithDescription("根据主题名和标签名返回所有灵感")
             .WithName("GetIdeasByThemeAndTag")
@@ -339,7 +413,7 @@ public static class BrainStormDatasEndpoints
             .WithName("GetRandomIdeaByTag")
         .RequireAuthorization();
 
-        app.MapGet("/api/ideas/ideas/All", async (BrainStormDbContext db, HttpContext httpContext) =>
+        app.MapGet("/api/ideas/All", async (BrainStormDbContext db, HttpContext httpContext) =>
         {
             //var userId = int.TryParse(httpContext.User?.Identity?.Name, out var parsedId) ? parsedId : 0;
 
@@ -347,6 +421,10 @@ public static class BrainStormDatasEndpoints
             var ideas = await db.Ideas
                 .OrderBy(i => i.CreatedAt)
                 .ToListAsync();
+
+            if (ideas.Count == 0) {
+                return Results.BadRequest(new { message = "灵感之海里一条灵感也没有，请去创建几条灵感吧" });
+            }
 
             return Results.Ok(ideas);
         })
@@ -538,8 +616,6 @@ public class UpdateIdeaModel
 {
     public string Title { get; set; }
     public string Description { get; set; }
-    public string ThemeTitle { get; set; }
-    public ICollection<string> TagsName { get; set; }
 }
 
 public class CreateThemeModel
