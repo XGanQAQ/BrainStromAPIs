@@ -83,46 +83,13 @@
             }
         </style>
     </head>
-    <script>
-        console.debug("begin login");
-
-        document.getElementById('login-form').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // 发送登录请求
-            fetch('https://localhost:7050/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Login successful!');
-                        window.location.href = '/dashboard'; // 登录成功后跳转到主页面
-                    } else {
-                        alert('Login failed: ' + data.message);
-                    }
-                })
-                .catch(error => {
-    console.error('Error:', error);
-    alert('请求失败，请稍后再试');
-});
-;
-        });
-    </script>
     <body>
         <div class="login-container">
             <h2 class="login-title">登录</h2>
             <form id="login-form">
                 <div class="input-group">
-                    <label for="email">邮箱</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" required>
                 </div>
                 <div class="input-group">
                     <label for="password">密码</label>
@@ -133,6 +100,41 @@
             <a href="注册界面.html" class="btn btn-register" id="registerBtn">注册</a>
         </div>
     </body>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // 发送登录请求
+            fetch('https://localhost:7050/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => {
+                // 检查响应状态
+                if (!response.ok) {
+                    throw new Error('登录失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 登录成功后存储 JWT Token
+                localStorage.setItem('jwt_token', data.token);
+             //   alert(data.token);
+                if(data.token);
+                // 登录成功后跳转到主页面
+                window.location.href = 'homepage.html';  // 或者你可以改为实际的主页面 URL
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('请求失败，请稍后再试');
+            });
+        });
+    </script>
 </html>
 
-    

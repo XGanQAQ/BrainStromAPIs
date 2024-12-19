@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background:linear-gradient(45deg, #ec61a4, #46b5fa)!important;
+}
+
+ .container {
+    text-align: center;
+    background-color:transparent;
+    background-image: url('2.jpg');
+    background-size: cover; /* 使背景图片覆盖整个容器 */
+    background-position: center; /* 使背景图片在容器中居中 */
+    background-repeat: no-repeat; /* 防止背景图片重复 */
+    padding: 20px; /* 适当的内边距 */
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 1080px; /* 适当的宽度 */
+    height: 800px;
+    position: relative;
+}
+
+.selected {
+    background: linear-gradient(to bottom, #dd1777, #0682ce)!important; /* 选中时的颜色渐变 */
+}
+
+/* 设置搜索框的样式 */
+.search-box {
+    width: 600px; /* 宽度设置为300px */
+    height: 45px; /* 高度设置为40px */
+    padding: 5px; /* 内边距，使文本不紧贴边框 */
+    border: 2px solid #ccc; /* 边框颜色和宽度 */
+    border-radius: 5px; /* 圆角 */
+    font-size: 16px; /* 字体大小 */
+    opacity: 0.6;
+}
+ 
+/* 设置搜索按钮的样式 */
+.search-btn {
+    width: 150px; /* 宽度设置为100px */
+    height: 60px; /* 高度与搜索框相同，设置为40px */
+    border: none; /* 无边框 */
+    border-radius: 5px; /* 圆角 */
+    /* background-color: #ec61a4; 背景颜色 */
+    background: linear-gradient(to bottom, #ec61a4, #46b5fa);
+    color: white; /* 文本颜色 */
+    font-size: 20px; /* 字体大小 */
+    cursor: pointer; /* 鼠标悬停时显示为手型 */
+    margin-top:320px; 
+    margin-bottom:80px;
+
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; /* 按钮之间的间距 */
+}
+
+.button-container{
+    display: flex;
+    gap: 15px; /* 按钮之间的间距 */
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 30%;
+    width: 180px;
+    height: 180px;
+    background-color: #43bdd5;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, #ec61a4, #46b5fa); /* 设置从上到下的颜色渐变背景 */
+    margin-left: 20px;
+}
+
+ 
+.btn:hover {
+    background: linear-gradient(to bottom, #dd1777, #0682ce); /* 悬停时变色 */
+   
+}
+
+.search-btn:hover {
+    background: linear-gradient(to bottom, #dd1777, #0682ce); /* 悬停时变色 */
+}
+
+.btn-combination:hover {
+    background: linear-gradient(to bottom, #dd1777, #0682ce); /* 悬停时变色 */
+}
+
+.return-btn {
+    position: absolute;
+    bottom: 50px;
+    left: 50px; /* 调整为左下角 */
+    width: 180px;
+    height: 60px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background-color: #46b5fa;
+    color: rgb(255, 255, 255); /* 确保文本颜色可见 */
+    cursor: pointer;
+    border: none;
+}
+
+.btn-combination {
+    position: absolute;
+    bottom: 440px;
+    left: 950px; /* 调整为左下角 */
+    width: 100px;
+    height: 60px;
+    padding: 10px 20px;
+    border-radius: 25px;
+    background-color: #46b5fa;
+    color: rgb(255, 255, 255); /* 确保文本颜色可见 */
+    cursor: pointer;
+    border: none;
+}
+ 
+.return-btn:hover {
+    background-color: #6ab380;
+}

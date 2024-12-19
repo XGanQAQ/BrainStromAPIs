@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作创建</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(45deg, #ee9a59,hsl(345, 85%, 77%)) !important;
+        }
+
+
+
+        /*父div*/
+        .container {
+            width: 80%;
+            max-width: 1080px;
+            border: 1px solid #e8a541;
+            border-radius: 8px;
+            background-color: #ffffffc5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        
+
+        /*上半方工具栏*/
+        .toolbar {
+            display: flex;
+            justify-content: space-around;
+            background-color: #fc9a70;
+            color: #fff;
+            padding: 10px;
+        }
+        .toolbar button {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background-color: #efba8f;
+            color: #ffffff;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .toolbar button:hover {
+            background-color: #da8d4f;
+        }
+
+
+
+
+        /*下半区左右分块*/
+        .bottomContainer {
+            display: flex;
+        }
+        .left-pane {
+            width: 30%;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 1px solid #ccc;
+        }
+        .right-pane {
+            width: 70%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /*下半方界面*/
+        .content-area {
+            padding: 20px;
+        }
+        .content-area h2 {
+            margin-top: 0;
+        }
+
+
+        /*tag区*/
+        .tags-container {
+            max-height: 560px;
+            overflow-y: auto;
+        }
+        /*打Tag按钮*/
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background: linear-gradient(45deg, #ef97c6,#f4a262) !important;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: linear-gradient(45deg, #ca679c,#da8240) !important;
+        }
+
+        
+        /*单个标题和输入框*/
+        .tag-item {
+            margin-bottom: 15px;
+            display: flex; 
+            flex-direction: column; /* 设置为列方向布局 */
+            align-items: flex-start; /* 使内部元素从顶部开始对齐 */
+        }
+        /*小标题的隐藏的输入框*/
+        .hidden-input {
+            display: none;
+            width: 100px; /* 与标签宽度一致 */
+            background-color: #ffffff8a;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+
+        
+        /* 大文本框区*/
+        .resizable-textarea {
+            width: calc(100% - 22px); /* 减去容器的内边距 */
+            height: 700px; /* 固定高度 */
+            padding: 20px;
+            background-color: #ffffff93;
+            border: 1px solid #cccccc5b;
+            border-radius: 20px;
+            resize: none; /* 禁用默认的调整大小手柄 */
+            overflow-y: auto; /* 如果内容超出高度，则启用垂直滚动 */
+            line-height: 1.5; /* 设置行高，提高可读性 */
+            box-sizing: border-box; /* 确保宽度和高度包括内边距和边框 */
+            font-size: 14px; /* 设置字体大小 */
+            font-family: Arial, sans-serif; /* 设置字体家族 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 功能区 -->
+        <div class="toolbar">
+            <button id="return" onclick="window.location.href='create.html'">&lt;- 返回</button>
+            <button id="save">保存</button>
+            <button id="delete">清空</button>
+        </div>
+ 
+        <div class="bottomContainer">
+            <!-- 左侧tag区 -->
+            <div class="left-pane">
+                <div class="content-area">
+                    <div onclick="toggleEditHeader(this)">
+                        <span id="title" style="font-weight: bold; font-size: 26px; color: #ee9a59;">给灵感取个名字吧~</span>
+                        <input type="text" id="Input" class="hidden-input" style="display:none;">
+                    </div>
+                    <span id="themeTitle" class="tag-value" style="font-weight: bold; font-size: 20px;color: #f9ae52;">主题：操作</span>
+                    <div class="tags-container" id="tagsContainer">
+                        <div class="tag-item" data-id="tagsName"></div>
+                    </div>
+                    <button id="addTag" class="btn btn:hover">打Tag！</button>
+                </div>
+            </div>
+            <!-- 右侧大文本区 -->
+            <div class="right-pane">
+                <textarea id="description" class="resizable-textarea" placeholder="描述一下你的灵感~"></textarea>
+            </div>
+        </div>
+ 
+    <script>
+        // 为调整大小的控制柄（通常出现在可调整大小的元素如文本框、窗口等的边缘或角落）添加事件监听器
+        document.querySelectorAll('.resizable-textarea::after').forEach(handle => {
+            console.log('Resize handle clicked (but not implemented)', handle);
+        });
+
+
+
+        /*Tag标签的修改*/
+        function toggleEditTitle(element) {
+            const parent = element.parentElement;
+            const input = parent.querySelector('.hidden-input');
+            const tagValue = element; // 修改为直接引用点击的元素
+            const placeholderText = '请输入tag';
+        
+            if (input.style.display === 'inline-block') {
+                // 如果输入框是可见的，隐藏它并更新标题
+                input.style.display = 'none';
+                if (input.value.trim()) {
+                    tagValue.textContent = input.value;
+                } else {
+                    // 如果输入框为空，恢复占位文本
+                    tagValue.textContent = placeholderText;
+                }
+                tagValue.style.cursor = 'default'; // 恢复默认光标样式
+            } else {
+                // 如果输入框是不可见的，显示它并给予焦点
+                input.value = tagValue.textContent === placeholderText ? '' : tagValue.textContent; // 初始化输入框内容
+                input.style.display = 'inline-block';
+                input.focus();
+                input.select(); // 自动选中输入框内容
+                tagValue.style.cursor = 'pointer'; // 设置为可点击的光标样式（虽然此时已隐藏）
+            }
+        }
+        function saveTitle(input, parentElement) {
+            const tagValue = parentElement.querySelector('.tag-value');
+            const placeholderText = '请输入tag';
+        
+            // 检查输入框是否为空，如果为空则删除该标签项
+            if (input.value.trim()) {
+                tagValue.textContent = input.value;
+                tagValue.style.cursor = 'default'; // 恢复默认光标样式
+            } else {
+                parentElement.remove(); // 删除该标签项
+            }
+            input.style.display = 'none'; // 隐藏输入框
+        }
+        document.getElementById('addTag').addEventListener('click', () => {
+            const newTagItem = document.createElement('div');
+            newTagItem.className = 'tag-item';
+            const newTagId = Date.now(); // 使用时间戳作为唯一标识符
+            newTagItem.setAttribute('data-id', newTagId);
+        
+            const newTagValue = document.createElement('span');
+            newTagValue.className = 'tag-value';
+            newTagValue.textContent = '请输入tag'; // 初始显示占位文本
+            newTagValue.setAttribute('onclick', `toggleEditTitle(this)`); // 直接在此元素上绑定点击事件
+        
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.className = 'hidden-input';
+            newInput.setAttribute('onblur', `saveTitle(this, this.parentElement)`);
+            // 可以添加键盘事件监听，当用户按下Enter时保存
+            newInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    saveTitle(newInput, newTagItem);
+                }
+            });
+        
+            const tagsContainer = document.getElementById('tagsContainer');
+            newTagItem.appendChild(newTagValue);
+            newTagItem.appendChild(newInput);
+            tagsContainer.appendChild(newTagItem);
+        });
+
+
+
+        /*大标题的修改*/
+        function toggleEditHeader(header) {
+            const span = header.querySelector('#title');
+            const input = header.querySelector('#Input');
+            if (input.style.display === 'none') {
+            // 切换为编辑模式
+            span.style.display = 'none';
+            input.style.display = 'inline-block';
+            input.value = span.textContent; // 设置输入框的初始值为标题的当前文本
+            input.focus(); // 使输入框获得焦点
+            input.select(); // 选中输入框内的所有文本（可选）
+            } else {
+            // 保存并退出编辑模式
+            saveHeaderTitle(input);
+            }
+        }
+        function saveHeaderTitle(input) {
+            const span = input.parentElement.querySelector('#title');
+            const value = input.value.trim(); // 去除首尾空格
+            if (value !== '') {
+            // 如果输入框不为空，则更新标题并隐藏输入框
+            span.textContent = value;
+            } else {
+            // 如果输入框为空，则恢复为默认标题
+            span.textContent = '请输入标题';
+            }
+            input.style.display = 'none'; // 隐藏输入框
+            span.style.display = 'inline-block'; // 显示标题
+        }
+        // 为了处理点击页面其他位置时保存编辑内容的情况，
+        // 为document添加一个点击事件监听器
+        document.addEventListener('click', (event) => {
+            // 检查点击事件是否发生在非输入框和标题编辑框上
+            if (!event.target.closest('.editable-header input') &&
+            !event.target.closest('.tag-item input')) {
+                // 检查场景标题的输入框是否为空且可见
+                const Input = document.getElementById('Input');
+                if (Input.style.display !== 'none' && Input.value.trim() === '') {
+                    // 如果为空，则恢复默认标题并隐藏输入框
+                    saveHeaderTitle(Input);
+                }
+            }
+        });
+
+
+
+        //点击“清空”
+        window.onload = function() {
+            // 获取清空按钮
+            var deleteButton = document.getElementById('delete');
+            // 获取文本区域
+            var textarea = document.querySelector('.resizable-textarea');
+        
+            // 给清空按钮添加点击事件监听器
+            deleteButton.addEventListener('click', function() {
+                var userConfirmed = confirm('是否清空灵感内容？');
+                if (userConfirmed) {
+                    // 用户点击了“确定”，清空文本区域的内容
+                    textarea.value = '';
+                } else {
+                    // 用户点击了“取消”，不执行任何操作
+                }
+            });
+        };
+
+
+        document.getElementById('save').addEventListener('click', () => {
+            // 保存功能，弹出“保存成功！”的弹窗
+            alert('保存成功！');
+        });
+    </script>
+</body>
+</html>

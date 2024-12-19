@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵感凝结</title>
+    <link rel="stylesheet" href="point-together.css">
+</head>
+<body>
+    <div class="container">
+        <div class="top-section">
+            <!-- <img src="1.jpg" alt="左上角图片" class="top-left-image"> -->
+            <!-- 搜索框和按钮现在放在一个新的容器中，位于文本的下方
+            <div class="search-container">
+                <input type="text" placeholder="请输入所要搜索的标签" class="search-box">
+                <button class="search-btn" onclick="performSearch()">搜索标签</button>
+            </div> -->
+        </div>
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="tagsName" placeholder="请输入所要搜索的标签" class="search-box">
+                <button class="search-btn" onclick="searchAndCombineInspirations()">搜索标签</button>
+            </div>
+        </div>
+        <div class="button-container">
+            <button class="btn btn-scene" data-selected="false" onclick="toggleButton(this)">场景</button>
+            <button class="btn btn-character" data-selected="false" onclick="toggleButton(this)">人物</button>
+            <button class="btn btn-operation" data-selected="false" onclick="toggleButton(this)">操作</button>
+            <button class="btn btn-mainstory" data-selected="false" onclick="toggleButton(this)">主线故事</button>
+            <button class="btn btn-worldview" data-selected="false" onclick="toggleButton(this)">世界观</button>
+        </div>
+        <button class="btn return-btn" onclick="window.location.href='homepage.html'">返回灵感小镇</button>
+        <button class="btn btn-combination" onclick="combineButtons()">合体</button>
+    </div>
+    <script>
+    // 搜索标签，获取灵感，并合并灵感
+        function searchAndCombineInspirations() {
+            const tagInput = document.getElementById('tagsName').value;
+            if (!tagInput) {
+                alert('请输入标签名！');
+                return;
+            }
+ 
+            // 发送请求到后端API获取灵感
+            fetch(`/api/get-inspirations-by-tag?tag=${encodeURIComponent(tagInput)}`, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('网络响应失败');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const inspirations = data.inspirations;
+                if (inspirations.length < 2) {
+                    alert('返回的灵感不足两条，无法合并！');
+                    return;
+                }
+ 
+                // 随机选择两条灵感进行合并
+                const randomInspirations = inspirations.sort(() => Math.random() - 0.5).slice(0, 2);
+                const combinedInspiration = combineInspirations(randomInspirations);
+ 
+                // // 显示合体灵感
+                // displayCombinedInspiration(combinedInspiration);
+            })
+            .catch(error => {
+                console.error('请求失败：', error);
+                alert('请求灵感时出错，请稍后再试。');
+            });
+        }
+ 
+        // 合并两条灵感为一个新的灵感
+        function combineInspirations(inspirations) {
+            const theme = '合体';
+            const texts = inspirations.map(inspiration => inspiration.text);
+            const combinedText = `合体灵感：${texts.join(' 和 ')}`;
+            return { theme, text: combinedText };
+        }
+ 
+        // // 显示合体灵感
+        // function displayCombinedInspiration(inspiration) {
+        //     const combinedInspirationDiv = document.getElementById('combinedInspiration');
+        //     combinedInspirationDiv.innerHTML = `<p>${inspiration.text}</p>`;
+        // }
+ 
+
+
+    //按钮勾选，合并灵感
+        function toggleButton(button) {
+            // 切换data-selected属性的值
+            const isSelected = !button.getAttribute('data-selected') || button.getAttribute('data-selected') === 'false';
+            button.setAttribute('data-selected', isSelected);
+     
+            // 根据data-selected属性的值添加或移除.selected类
+            if (isSelected) {
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+            }
+        }
+        
+        function combineButtons() {
+            const buttons = document.querySelectorAll('.button-container .btn');
+            let selectedButtons = [];
+ 
+            // 收集所有已选中的按钮的主题名
+            buttons.forEach(button => {
+                if (button.getAttribute('data-selected') === 'true') {
+                    selectedButtons.push(button.classList[1]); // 使用classList[1]来获取如"btn-scene"这样的类名，它代表主题
+                }
+            });
+ 
+            // 如果没有选中任何按钮，则提示用户
+            if (selectedButtons.length < 2) {
+                alert('请先选择至少两个按钮进行组合！');
+                return;
+            }
+ 
+            // 发送请求到后端API
+            fetch('/api/get-inspirations', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ themes: selectedButtons })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 假设后端返回了一个灵感数组，每个灵感都有一个text属性
+                const inspirations = data.inspirations;
+ 
+                // 随机选择一条灵感（这里为了简化，只选择第一条）
+                // 在实际应用中，您可能想要实现更复杂的逻辑来选择或合并灵感
+                const randomInspiration = inspirations[Math.floor(Math.random() * inspirations.length)];
+ 
+                // 创建一个新的合体灵感（这里只是简单地将选中的主题和随机灵感文本结合起来）
+                const combinedInspiration = {
+                    theme: '合体',
+                    text: `合体灵感：${selectedButtons.join('、')} - ${randomInspiration.text}`
+                };
+ 
+                // 显示或处理合体灵感（这里只是简单地显示在一个警告框中）
+                alert(`合体灵感生成成功！\n${combinedInspiration.text}`);
+ 
+                // 您还可以将合体灵感发送到另一个页面、保存到本地存储或以其他方式处理
+            })
+            .catch(error => {
+                console.error('请求失败：', error);
+                alert('请求灵感时出错，请稍后再试。');
+            });
+        }
+       
+    </script>
+</body>
+</html>
+
+
