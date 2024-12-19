@@ -27,9 +27,11 @@ public static class BrainStormDatasEndpoints
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password)
             };
 
+
             db.Users.Add(user);
             await db.SaveChangesAsync();
-
+            InitUserTheme(db,model.Username);
+            
             return Results.Ok(new { message = "User registered successfully" });
         })
         .WithDescription("传入的账户密码，在数据库中创建一个用户")
@@ -98,9 +100,17 @@ public static class BrainStormDatasEndpoints
             idea.User = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
             
             idea.Theme = await db.Themes.FirstOrDefaultAsync(t => t.Title == idea.ThemeTitle);
-            idea.ThemeId = idea.Theme.Id;
-
+            //idea.ThemeId = idea.Theme.Id;
             idea.Tags = await db.Tags.Where(t => idea.TagsName.Contains(t.Name)).ToListAsync();
+
+            if(idea.Theme == null)
+            {
+                return Results.BadRequest("不存在此主题，请检查你是否已经创建当前主题.");
+            }
+            else
+            {
+                idea.ThemeId = idea.Theme.Id;
+            }
 
             db.Ideas.Add(idea);
             await db.SaveChangesAsync();
@@ -448,6 +458,48 @@ public static class BrainStormDatasEndpoints
         })
             .WithDescription("根据标签id删除标签（删除当前用户的）");
         #endregion
+    }
+
+    //初始化用户的主题
+    private static async void InitUserTheme(BrainStormDbContext db,String UserName)
+    {
+        int ThisUserId = db.Users.FirstOrDefault(u => u.Username == UserName).Id;
+        var theme1 = new Theme
+        {
+            Title = "人物",
+            UserId = ThisUserId,
+            Description = "人物相关"
+        };
+        var theme2 = new Theme
+        {
+            Title = "场景",
+            UserId = ThisUserId,
+            Description = "场景相关"
+        };
+        var theme3 = new Theme
+        {
+            Title = "世界观",
+            UserId = ThisUserId,
+            Description = "世界观相关"
+        };
+        var theme4 = new Theme
+        {
+            Title = "操作",
+            UserId = ThisUserId,
+            Description = "操作相关"
+        };
+        var theme5 = new Theme
+        {
+            Title = "故事主线",
+            UserId = ThisUserId,
+            Description = "故事主线相关"
+        };
+        db.Themes.Add(theme1);
+        db.Themes.Add(theme2);
+        db.Themes.Add(theme3);
+        db.Themes.Add(theme4);
+        db.Themes.Add(theme5);
+        await db.SaveChangesAsync();
     }
 }
 
