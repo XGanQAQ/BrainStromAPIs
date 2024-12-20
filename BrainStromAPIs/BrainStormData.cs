@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BrainStromAPIs
 {
@@ -14,6 +15,7 @@ namespace BrainStromAPIs
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
         public ICollection<User> Users { get; set; } //队伍里的成员
     }
 
@@ -24,8 +26,10 @@ namespace BrainStromAPIs
         public string PasswordHash { get; set; }
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public Role Role { get; set; } 
+        public Role Role { get; set; }
+        [JsonIgnore]
         public ICollection<Team> Teams { get; set; } //用户属于的队伍
+        [JsonIgnore]
         public ICollection<Idea> Ideas { get; set; } // 用户创建的Idea
     }
     public class Theme
@@ -35,6 +39,7 @@ namespace BrainStromAPIs
         public string Title { get; set; }
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
         public ICollection<Idea> Ideas { get; set; }
 
     }
@@ -47,10 +52,13 @@ namespace BrainStromAPIs
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public string ThemeTitle { get; set; }
         public int ThemeId { get; set; }
+        [JsonIgnore]
         public Theme ?Theme { get; set; }
         public int UserId { get; set; }
+        [JsonIgnore]
         public User ?User { get; set; }
         public ICollection<string> TagsName { get; set; }
+        [JsonIgnore]
         public ICollection<Tag> ?Tags { get; set; } // 导航属性 一个Idea可以有多个Tag
     }
 
@@ -60,7 +68,7 @@ namespace BrainStromAPIs
         public int UserId { get; set; }
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
+        [JsonIgnore]
         public ICollection<Idea> Ideas { get; set; }  // 导航属性 一个Tag可以对应多个Idea
     }
 

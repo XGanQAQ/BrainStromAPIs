@@ -375,6 +375,7 @@ public static class BrainStormDatasEndpoints
             .WithName("GetIdeasByThemeAndTag")
             .RequireAuthorization();
 
+        //——————————————————————————————随机获得——————————————————————————————————
         //根据主题名随机返回一条灵感
         app.MapGet("/api/ideas/RandomByTheme", async (BrainStormDbContext db, HttpContext httpContext, string themeName) =>
         {
@@ -389,6 +390,12 @@ public static class BrainStormDatasEndpoints
                 .Where(i => i.UserId == userId && i.ThemeTitle == themeName)
                 .OrderBy(i => Guid.NewGuid())
                 .FirstOrDefaultAsync();
+
+            if (idea == null) 
+            {
+                return Results.BadRequest("为查询到符合条件的灵感." );
+            }
+
             return Results.Ok(idea);
         })
             .WithDescription("根据主题名随机返回一条灵感")
@@ -409,6 +416,12 @@ public static class BrainStormDatasEndpoints
                 .Where(i => i.UserId == userId && i.TagsName.Contains(tagName))
                 .OrderBy(i => Guid.NewGuid())
                 .FirstOrDefaultAsync();
+
+            if (idea == null)
+            {
+                return Results.BadRequest("为查询到符合条件的灵感.");
+            }
+
             return Results.Ok(idea);
         })
             .WithDescription("根据标签名随机返回一条灵感")
