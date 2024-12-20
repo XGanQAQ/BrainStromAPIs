@@ -87,11 +87,13 @@ public static class BrainStormDatasEndpoints
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
+            
             foreach (var tagName in model.TagsName)
             {
                 if (db.Tags.FirstOrDefault(t => t.Name == tagName) == null)
                 {
-                    return Results.BadRequest("不存在此标签，请检查你是否已经创建当前标签.");
+                    await CreateTage(db, userId, tagName);
+                    Console.WriteLine($"根据提交的灵感，自动创建标签 {tagName} ");
                 }
             }
 
@@ -123,7 +125,7 @@ public static class BrainStormDatasEndpoints
             db.Ideas.Add(idea);
             await db.SaveChangesAsync();
 
-            return Results.Ok(new { message = "Idea created successfully." });
+            return Results.Ok(new { message = "Idea created successfully."});
         })
         .WithDescription("提交一条Idea，带有标题，描述，主题，标签")
         .WithName("CreateIdea")
@@ -510,16 +512,7 @@ public static class BrainStormDatasEndpoints
         {
             var userId = int.TryParse(httpContext.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var parsedId) ? parsedId : 0;
 
-            var tag = new Tag
-            {
-                UserId = userId,
-                Name = tagName
-            };
-
-            db.Tags.Add(tag);
-            await db.SaveChangesAsync();
-
-            return Results.Ok(new { message = "Tag created successfully." });
+            return await CreateTage(db, userId, tagName);
         })
             .WithDescription("新建一个标签")
             .WithName("CreateTag")
@@ -543,6 +536,7 @@ public static class BrainStormDatasEndpoints
             return Results.Ok(new { message = "Tag deleted successfully." });
         })
             .WithDescription("根据标签id删除标签（删除当前用户的）");
+
 
         #endregion
     }
@@ -587,6 +581,20 @@ public static class BrainStormDatasEndpoints
         db.Themes.Add(theme4);
         db.Themes.Add(theme5);
         await db.SaveChangesAsync();
+    }
+
+    private static async Task<IResult> CreateTage(BrainStormDbContext db,int userId,string tagName)
+    {
+        var tag = new Tag
+        {
+            UserId = userId,
+            Name = tagName
+        };
+
+        db.Tags.Add(tag);
+        await db.SaveChangesAsync();
+
+        return Results.Ok(new { message = "Tag created successfully." });
     }
 }
 
