@@ -102,7 +102,7 @@
 <body>
     <div class="register-container">
         <div class="back-to-login-wrapper">
-            <a href="登陆界面.html" class="back-to-login">&lt;- 登陆界面</a>
+            <a href="index.html" class="back-to-login">&lt;- 登录界面</a>
         </div>
 
         <h2 class="register-title">注册</h2>
@@ -174,7 +174,7 @@
             .then(response => response.json())
             .then(data => {
                     alert(data.message);
-                    window.location.href = '登陆界面.html'; // 注册成功后跳转到登录页面
+                    window.location.href = 'index.html'; // 注册成功后跳转到登录页面
             })
             .catch(error => {
                  console.error('Error:', error);
