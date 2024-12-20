@@ -529,8 +529,11 @@
 
                 // 创建显示 JSON 内容的元素
                 dataItemDiv.innerHTML = `               
-                <h3>&nbsp&nbsp${item.title}<span style="font-size: 0.8em; color: gray;">  ID=${item.id}</h3>
-                <p>&nbsp&nbsp${item.description}</p>
+                <h3>&nbsp&nbsp${item.title}
+                <span style="font-size: 0.8em; color: gray;">  ID=${item.id}
+                <span style="font-size: 0.8em; color: gray;">  主题=${item.themeTitle}
+                <span style="font-size: 0.8em; color: gray;">  标签=${item.tagsName}
+                </h3>
                 `;
 
                 // 将每个数据项添加到页面上

@@ -264,26 +264,6 @@
                         <h3>&nbsp&nbsp人物</h3>
                         <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
                     </div>-->
-                    <!--<div class="scene">
-                        <h3>&nbsp&nbsp场景</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，可以展示动态内容。</p>
-                    </div>
-                    <div class="operation">
-                        <h3>&nbsp&nbsp操作</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="mainstory">
-                        <h3>&nbsp&nbsp主线故事</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="worldview">
-                        <h3>&nbsp&nbsp世界观</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>
-                    <div class="charactor">
-                        <h3>&nbsp&nbsp合体</h3>
-                        <p>&nbsp&nbsp这里是一个输出框，显示一些文本内容。</p>
-                    </div>-->
                 </div>
                 
             </div>
@@ -445,7 +425,11 @@
                 dataItemDiv.classList.add('data-item');
                 // 创建显示 JSON 内容的元素
                 dataItemDiv.innerHTML = `               
-                <h3>&nbsp&nbsp${item.title}<span style="font-size: 0.8em; color: gray;">  ID=${item.id}</h3>
+                <h3>&nbsp&nbsp${item.title}
+                <span style="font-size: 0.8em; color: gray;">  ID=${item.id}
+                <span style="font-size: 0.8em; color: gray;">  主题=${item.themeTitle}
+                <span style="font-size: 0.8em; color: gray;">  标签=${item.tagsName}
+                </h3>
                 <p>&nbsp&nbsp${item.description}</p>
                 `;
 
