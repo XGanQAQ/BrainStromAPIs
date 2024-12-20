@@ -1,0 +1,170 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(45deg, #ee9a59,hsl(345, 85%, 77%)) !important;
+}
+
+
+
+/*父div*/
+.container {
+    width: 80%;
+    max-width: 1080px;
+    border: 1px solid #e8a541;
+    border-radius: 8px;
+    background-color: #ffffffc5;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+
+
+/*上半方工具栏*/
+.toolbar {
+    display: flex;
+    justify-content: space-around;
+    background-color: #fc9a70;
+    color: #fff;
+    padding: 10px;
+}
+
+    .toolbar button {
+        padding: 15px 30px;
+        cursor: pointer;
+        border: none;
+        background-color: #efba8f;
+        color: #ffffff;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+        .toolbar button:hover {
+            background-color: #da8d4f;
+        }
+
+
+
+
+/*下半区左右分块*/
+.bottomContainer {
+    display: flex;
+}
+
+.left-pane {
+    width: 30%;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 1px solid #ccc;
+}
+
+.right-pane {
+    width: 70%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+/*下半方界面*/
+.content-area {
+    padding: 20px;
+}
+
+    .content-area h2 {
+        margin-top: 0;
+    }
+
+
+/*tag区*/
+.tags-container {
+    max-height: 560px;
+    overflow-y: auto;
+    margin-top: 40px; /* 给容器添加 20px 的顶部间距 */
+}
+/*打Tag按钮*/
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background: linear-gradient(45deg, #ef97c6,#f4a262) !important;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    .btn:hover {
+        background: linear-gradient(45deg, #ca679c,#da8240) !important;
+    }
+
+
+/*单个标题和输入框*/
+.tag-item {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column; /* 设置为列方向布局 */
+    align-items: flex-start; /* 使内部元素从顶部开始对齐 */
+    border: 2px solid rgb(244, 204, 30); /* 边框 */
+    border-radius: 5px; /* 圆角边框 */
+    padding: 8px 12px; /* 内边距 */
+    background-color: rgb(255, 255, 249); /* 背景色 */
+    font-size: 14px; /* 设置字体大小 */
+    width: 200px; /* 设置输入框宽度 */
+    box-sizing: border-box; /* 确保 padding 不会影响宽度 */
+}
+
+    /* 聚焦时的效果 */
+    .tag-item:focus-within {
+        border-color: #66afe9; /* 聚焦时边框变蓝 */
+        box-shadow: 0 0 5px rgba(102, 175, 233, 0.6); /* 添加聚焦时的阴影 */
+    }
+
+
+/*小标题的隐藏的输入框*/
+.hidden-input {
+    display: none;
+    width: 100px; /* 与标签宽度一致 */
+    background-color: #ffffff8a;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
+
+/* 大文本框区*/
+.resizable-textarea {
+    width: calc(100% - 22px); /* 减去容器的内边距 */
+    height: 700px; /* 固定高度 */
+    padding: 20px;
+    background-color: #ffffff93;
+    border: 1px solid #cccccc5b;
+    border-radius: 20px;
+    resize: none; /* 禁用默认的调整大小手柄 */
+    overflow-y: auto; /* 如果内容超出高度，则启用垂直滚动 */
+    line-height: 1.5; /* 设置行高，提高可读性 */
+    box-sizing: border-box; /* 确保宽度和高度包括内边距和边框 */
+    font-size: 14px; /* 设置字体大小 */
+    font-family: Arial, sans-serif; /* 设置字体家族 */
+}
+
+/* 小输入框样式 */
+.small-input {
+    width: 150px; /* 设置输入框宽度 */
+    padding: 8px 12px; /* 内边距，调整文本距离边缘的距离 */
+    font-size: 14px; /* 字体大小 */
+    border: 1px solid #ccc; /* 边框样式 */
+    border-radius: 5px; /* 圆角边框 */
+    outline: none; /* 去掉输入框聚焦时的外边框 */
+    transition: border-color 0.3s ease; /* 边框颜色过渡效果 */
+}
+
+    /* 聚焦时的样式 */
+.small-input:focus {
+    border-color: #66afe9; /* 聚焦时边框变为蓝色 */
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6); /* 添加阴影效果 */
+}

@@ -144,8 +144,8 @@
         <!-- 功能区 -->
         <div class="toolbar">
             <button id="return" onclick="window.location.href='create.html'">&lt;- 返回</button>
-            <button id="save">保存</button>
-            <button id="delete">清空</button>
+            <button id="save" onclick="">保存</button>
+            <button id="delete" onclick="">清空</button>
         </div>
  
         <div class="bottomContainer">
@@ -226,36 +226,42 @@
             input.style.display = 'none'; // 隐藏输入框
         }
             //第一次按下添加标签后新增一个框用来储存
-            document.getElementById('addTag').addEventListener('click', () => 
-            {
+            document.getElementById('addTag').addEventListener('click', () => {
+            // 创建新的标签项
             const newTagItem = document.createElement('div');
             newTagItem.className = 'tag-item';
-            const newTagId = Date.now();
+            const newTagId = Date.now(); // 使用当前时间戳作为标签ID
             newTagItem.setAttribute('data-id', newTagId);
-        
+
+            // 创建标签值的span元素
             const newTagValue = document.createElement('span');
             newTagValue.className = 'tag-value';
-            newTagValue.textContent = '请输入tag'; 
-            newTagValue.setAttribute('onclick', `toggleEditTitle(this)`); 
-        
+            newTagValue.textContent = '请输入tag';
+            newTagValue.setAttribute('onclick', `toggleEditTitle(this)`); // 点击时触发编辑
+
+            // 创建输入框
             const newInput = document.createElement('input');
             newInput.type = 'text';
             newInput.className = 'hidden-input';
-            newInput.setAttribute('onblur', `saveTitle(this, this.parentElement)`);
-            newInput.addEventListener('keypress', (event) => 
-            {
-                if (event.key === 'Enter') 
-                {
-                    saveTitle(newInput, newTagItem);
+            newInput.setAttribute('onblur', `saveTitle(this, this.parentElement)`); // 失去焦点时保存输入内容
+
+            // 监听回车键，按下时保存内容
+            newInput.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    saveTitle(newInput, newTagItem); // 按回车键时保存标签内容
                 }
             });
-            }
-            );
-            const tagsContainer = document.getElementById('tagsContainer');
+
+            // 将newTagValue和newInput添加到newTagItem中
             newTagItem.appendChild(newTagValue);
             newTagItem.appendChild(newInput);
+
+            // 将新标签项添加到标签容器中
+            const tagsContainer = document.getElementById('tagsContainer');
             tagsContainer.appendChild(newTagItem);
-           
+        });
+
+            
             //提交tag
             function submitTag(tagName) {
             fetch('https://localhost:7050/api/ideas/tags', {

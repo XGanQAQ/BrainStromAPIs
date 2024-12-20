@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人物创建</title>
+    <link rel="stylesheet" href="create-idea.css">
+    <script src="create-idea.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 功能区 -->
+        <div class="toolbar">
+            <button id="return" onclick="window.location.href='create.html'">&lt;- 返回</button>
+            <button id="save" onclick="addSaveButtonEvent()">保存</button>
+            <button id="delete" onclick="">清空</button>
+        </div>
+
+        <div class="bottomContainer">
+            <!-- 左侧tag区 -->
+            <div class="left-pane">
+                <div class="content-area">
+                    <div onclick="toggleEditHeader(this)">
+                        <span id="title" style="font-weight: bold; font-size: 26px; color: #ee9a59;">点击我，给灵感取个名字吧~</span>
+                        <input id="Input" type="text" class="hidden-input" style="display:none;" name="tagName">
+                    </div>
+                    <span id="themeTitle" class="tag-value" style="font-weight: bold; font-size: 20px;color: #f9ae52;">主题：人物</span>
+                    <div id="tagsContainer" class="tags-container">
+                        <div class="tag-item" contenteditable="true" role="textbox">请输入标签</div>
+                    </div>
+                    <button id="addTag" class="btn btn:hover" onclick="addTag()">添加标签</button>
+                    <button id="deleteTag" class="btn btn:hover" onclick="deleteLastTag()">删除标签</button>
+                </div>
+            </div>
+            <!-- 右侧大文本区 -->
+            <div class="right-pane">
+                <textarea id="description" class="resizable-textarea" placeholder="描述一下你的灵感~"></textarea>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(45deg, #67c9db, hsl(136, 47%, 61%)) !important;
+}
+
+.register-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 1080px;
+    height: 770px;
+    display: flex; /* 使用 flexbox 布局 */
+    justify-content: space-between; /* 使左右列之间有间隔 */
+    background-image: url('create2.png'); /* 替换为你的图像路径 */
+    background-size: cover; /* 让背景图像覆盖整个页面 */
+    background-position: center; /* 居中显示背景图像 */
+    background-repeat: no-repeat; /* 防止背景图片重复 */
+}
+
+.register-title {
+    font-size: 24px;
+    color: #455337;
+    margin-bottom: 20px;
+}
+
+.left-column {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    padding: 50px;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0);
+    flex: 1;
+}
+
+.top-section {
+    text-align: center;
+}
+
+    .top-section img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 10px;
+    }
+
+.bottom-section button {
+    width: 350px;
+    padding: 40px;
+    height: 450px;
+    font-size: 24px;
+    background-color: #69785b;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+    .bottom-section button:hover {
+        background-color: rgba(151, 161, 138, 0.6); /* 使用半透明的背景色 */
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 60px rgba(255, 255, 255, 0.3); /* 添加发光效果 */
+        filter: brightness(1); /* 增加亮度 */
+    }
+
+.right-column {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    box-sizing: border-box;
+    flex: 1;
+    position: relative; /* 添加相对定位 */
+}
+
+.button-row {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 60px;
+    margin-left: 60px; /* 改变按钮之间的水平间距 */
+}
+
+.right-column button {
+    width: 180px;
+    padding: 40px;
+    font-size: 24px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #67c9db, hsl(136, 47%, 61%)) !important;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-sizing: border-box; /* Ensures padding doesn't affect button size */
+}
+
+    .right-column button:hover {
+        background: linear-gradient(45deg, #3aa9bc, hsl(136, 50%, 51%)) !important;
+    }
+
+.middle-row {
+    justify-content: center; /* Centers the single button in the middle row */
+}
+
+/* 添加返回按钮容器的样式 */
+.back-to-login-wrapper {
+    position: absolute; /* 使用绝对定位 */
+    top: 0px; /* 距离顶部10px */
+    right: 10px; /* 距离右侧10px */
+    display: flex; /* 使用flex布局使按钮居中 */
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+}
+
+.back-to-login {
+    padding: 10px 20px; /* 设置内边距 */
+    font-size: 16px; /* 设置字体大小 */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, #67c9db, hsl(136, 47%, 61%)) !important;
+    color: white; /* 设置文字颜色 */
+    border: none; /* 去除边框 */
+    border-radius: 5px; /* 设置圆角 */
+    cursor: pointer; /* 设置鼠标悬停时显示为手型 */
+}
+
+    .back-to-login:hover {
+        background: linear-gradient(45deg, #3aa9bc, hsl(136, 50%, 51%)) !important;
+    }
