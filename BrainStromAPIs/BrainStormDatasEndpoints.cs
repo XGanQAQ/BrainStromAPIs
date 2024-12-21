@@ -369,6 +369,11 @@ public static class BrainStormDatasEndpoints
                 .ToListAsync();
             }
 
+            if (ideas.Count==0)
+            {
+                return Results.BadRequest("为查询到任何符合条件的灵感.");
+            }
+
             return Results.Ok(ideas);
         })
             .WithDescription("根据主题名和标签名返回所有灵感")
