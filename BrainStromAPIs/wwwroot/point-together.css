@@ -50,7 +50,7 @@ body {
     font-size: 20px; /* 字体大小 */
     cursor: pointer; /* 鼠标悬停时显示为手型 */
     margin-top:320px; 
-    margin-bottom:80px;
+    margin-bottom:40px;
 
 }
 
@@ -61,7 +61,7 @@ body {
     gap: 10px; /* 按钮之间的间距 */
 }
 
-.button-container{
+.button-container {
     display: flex;
     gap: 15px; /* 按钮之间的间距 */
 }
@@ -73,7 +73,7 @@ body {
     border: none;
     border-radius: 30%;
     width: 180px;
-    height: 180px;
+    height: 100px;
     background-color: #43bdd5;
     color: white;
     display: flex;
@@ -106,6 +106,7 @@ body {
     height: 60px;
     padding: 10px 20px;
     border-radius: 25px;
+    margin-top: 20px;
     background-color: #46b5fa;
     color: rgb(255, 255, 255); /* 确保文本颜色可见 */
     cursor: pointer;
@@ -129,3 +130,22 @@ body {
 .return-btn:hover {
     background-color: #6ab380;
 }
+.result-box {
+    font-family: Arial, sans-serif;
+    width: 95%;
+    height: 100px;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 10px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    background-color: rgba(255, 255, 255, 0.3);
+    overflow-y: scroll;
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
